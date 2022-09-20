@@ -1,3 +1,5 @@
+package de.wuespace.telestion.project.corfu.sample;
+
 import de.wuespace.telestion.api.verticle.GenericConfiguration;
 import de.wuespace.telestion.api.verticle.TelestionVerticle;
 import de.wuespace.telestion.api.verticle.trait.WithEventBus;

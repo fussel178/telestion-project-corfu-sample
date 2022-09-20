@@ -1,11 +1,11 @@
 FROM openjdk:16.0
 
-ENV APP_DIR /usr/telestion/##REPO_NAME##
+ENV APP_DIR /usr/telestion/telestion-project-corfu-sample
 
-ADD build/distributions/##REPO_NAME##.tar /usr/telestion
+ADD build/distributions/telestion-project-corfu-sample.tar /usr/telestion
 
 WORKDIR $APP_DIR
 EXPOSE 9870
 
 ENTRYPOINT ["sh", "-c"]
-CMD ["./bin/##REPO_NAME##"]
+CMD ["./bin/telestion-project-corfu-sample"]
