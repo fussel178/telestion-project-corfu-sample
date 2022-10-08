@@ -18,9 +18,9 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.2'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.2'
-    implementation "io.vertx:vertx-core:4.2.7"
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.14.0-rc1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.0-rc1'
+    implementation "io.vertx:vertx-core:4.3.4"
 
 	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
 	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.11'
@@ -31,8 +31,8 @@ dependencies {
     implementation 'de.wuespace.telestion:telestion-services:0.9.0'
     implementation 'de.wuespace.telestion:telestion-examples:0.9.0'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
 
 test {
