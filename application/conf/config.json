@@ -9,12 +9,6 @@
 				"config": {}
 			},
 			{
-				"name": "Random Position Publisher",
-				"verticle": "de.wuespace.telestion.examples.RandomPositionPublisher",
-				"magnitude": 1,
-				"config": {}
-			},
-			{
 				"name": "Eventbus Tcp Bridge",
 				"verticle": "de.wuespace.telestion.services.connection.EventbusTcpBridge",
 				"magnitude": 1,
@@ -23,6 +17,53 @@
 					"port": 9870,
 					"inboundPermitted": [],
 					"outboundPermitted": []
+				}
+			},
+			{
+				"name": "UDP Transmitter",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.UDPTransmitter",
+				"magnitude": 1,
+				"config": {
+					"inAddress": "raw-telecommands",
+					"outAddress": "raw-telemetry",
+					"downlinkPort": 8669,
+					"uplinkPort": 8670
+				}
+			},
+			{
+				"name": "Corfu Component Registrar",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.CorfuComponentRegistrar",
+				"magnitude": 1,
+				"config": {
+					"registrarClassNames": [
+						"de.wuespace.telestion.project.corfu.sample.generated.osbw.GeneratedRegistrar"
+					]
+				}
+			},
+			{
+				"name": "Corfu Telecommand Serializer",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.CorfuTelecommandSerializer",
+				"magnitude": 1,
+				"config": {
+					"inAddress": "corfu-telecommands",
+					"outAddress": "raw-telecommands"
+				}
+			},
+			{
+				"name": "Corfu Telemetry Deserializer",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.CorfuTelemetryDeserializer",
+				"magnitude": 1,
+				"config": {
+					"inAddress": "raw-telemetry",
+					"outAddress": "corfu-telemetry"
+				}
+			},
+			{
+				"name": "Example App Incrementer",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.ExampleAppIncrementer",
+				"magnitude": 1,
+				"config": {
+					"outAddress": "corfu-telecommands"
 				}
 			}
 		]
