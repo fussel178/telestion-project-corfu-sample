@@ -2,7 +2,7 @@ package de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.wuespace.telestion.project.corfu.sample.converter.message.CorfuProperty;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuProperty;
 
 import java.util.BitSet;
 

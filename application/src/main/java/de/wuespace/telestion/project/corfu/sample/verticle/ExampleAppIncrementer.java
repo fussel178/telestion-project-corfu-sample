@@ -5,7 +5,7 @@ import de.wuespace.telestion.api.verticle.TelestionConfiguration;
 import de.wuespace.telestion.api.verticle.TelestionVerticle;
 import de.wuespace.telestion.api.verticle.trait.WithEventBus;
 import de.wuespace.telestion.api.verticle.trait.WithTiming;
-import de.wuespace.telestion.project.corfu.sample.converter.message.Telecommand;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuTelecommand;
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp.ExampleAppTelecommand;
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp.IncrementCounterTelecommandPayload;
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.node.ObcNode;
@@ -28,12 +28,17 @@ public class ExampleAppIncrementer extends TelestionVerticle<ExampleAppIncrement
 
 	@Override
 	public void onStart() {
-		var message = new Telecommand(0,
+		var telecommand = new CorfuTelecommand(
 				(short) 0,
-				0,
+				(short) 0,
+				// execute immediate
+				0L,
+				// only to obc node
 				new ObcNode(ObcNode.ObcHardware.MT0_ID0),
-				new ExampleAppTelecommand(new IncrementCounterTelecommandPayload(getConfig().step)));
+				// to example app with command increment counter
+				new ExampleAppTelecommand(new IncrementCounterTelecommandPayload(getConfig().step()))
+		);
 
-		interval(Duration.ofMillis(getConfig().interval), timerId -> publish(getConfig().outAddress, message));
+		interval(Duration.ofMillis(getConfig().interval), timerId -> publish(getConfig().outAddress, telecommand));
 	}
 }

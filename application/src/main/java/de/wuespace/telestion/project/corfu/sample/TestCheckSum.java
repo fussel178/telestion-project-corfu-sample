@@ -1,6 +1,6 @@
 package de.wuespace.telestion.project.corfu.sample;
 
-import de.wuespace.telestion.project.corfu.sample.converter.util.RODOSCheckSum;
+import de.wuespace.telestion.project.corfu.sample.pkg.rodos.mapper.RodosCheckSum;
 
 public class TestCheckSum {
 	public static void main(String[] args) {
@@ -11,7 +11,7 @@ public class TestCheckSum {
 				(byte) 0b00000010
 		};
 
-		short checkSum = RODOSCheckSum.calculateCheckSum(data);
+		short checkSum = RodosCheckSum.calculateCheckSum(data);
 
 		System.out.printf("Checksum: %04X%n", checkSum);
 	}

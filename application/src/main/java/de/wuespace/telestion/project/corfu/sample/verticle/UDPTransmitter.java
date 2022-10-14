@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import de.wuespace.telestion.api.verticle.TelestionConfiguration;
 import de.wuespace.telestion.api.verticle.TelestionVerticle;
 import de.wuespace.telestion.api.verticle.trait.WithEventBus;
-import de.wuespace.telestion.project.corfu.sample.verticle.message.RawMessage;
+import de.wuespace.telestion.project.corfu.sample.pkg.util.ByteArrayUtils;
+import de.wuespace.telestion.services.connection.rework.RawMessage;
 import io.vertx.core.Promise;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.datagram.DatagramPacket;
 import io.vertx.core.datagram.DatagramSocket;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -58,12 +59,16 @@ public class UDPTransmitter extends TelestionVerticle<UDPTransmitter.Configurati
 	}
 
 	private void handleReceive(DatagramPacket packet) {
-		logger.debug("Received new packet: {}", Arrays.toString(packet.data().getBytes()));
+		logger.debug("Received new packet: {}", ByteArrayUtils.toString(packet.data().getBytes()));
 		publish(getConfig().outAddress, new RawMessage(packet.data().getBytes()));
 	}
 
 	private void handleSend(RawMessage message) {
-		logger.debug("Send new packet to host {}:{}: {}", getConfig().dstHost, getConfig().uplinkPort, Arrays.toString(message.data()));
-		socket.send(message.asBuffer(), getConfig().uplinkPort, getConfig().dstHost);
+		logger.debug("Send new packet to host {}:{}: {}",
+				getConfig().dstHost,
+				getConfig().uplinkPort,
+				ByteArrayUtils.toString(message.data())
+		);
+		socket.send(Buffer.buffer(message.data()), getConfig().uplinkPort, getConfig().dstHost);
 	}
 }

@@ -1,13 +1,13 @@
 package de.wuespace.telestion.project.corfu.sample;
 
-import de.wuespace.telestion.project.corfu.sample.converter.serializer.MessageSerializer;
-import de.wuespace.telestion.project.corfu.sample.converter.exception.SerializationException;
-import de.wuespace.telestion.project.corfu.sample.converter.store.HashMessageTypeStore;
-import de.wuespace.telestion.project.corfu.sample.converter.util.ByteArrayUtils;
-import de.wuespace.telestion.project.corfu.sample.converter.util.ReflectionUtils;
-import de.wuespace.telestion.project.corfu.sample.converter.jackson.CorfuModule;
-import de.wuespace.telestion.project.corfu.sample.converter.message.Telecommand;
-import de.wuespace.telestion.project.corfu.sample.converter.message.Telemetry;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.CorfuMessageMapper;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.exception.CorfuSerializationException;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.HashMessageTypeStore;
+import de.wuespace.telestion.project.corfu.sample.pkg.util.ByteArrayUtils;
+import de.wuespace.telestion.project.corfu.sample.pkg.util.ReflectionUtils;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.jackson.CorfuModule;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuTelecommand;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuTelemetry;
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp.*;
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.node.ObcNode;
 import io.vertx.core.json.Json;
@@ -47,7 +47,7 @@ public class TestManual {
 		bitSet.set(11);
 		bitSet.set(12);
 
-		var telemetry = new Telemetry(
+		var telemetry = new CorfuTelemetry(
 				0,
 				23478923L,
 				2378297398L,
@@ -56,10 +56,10 @@ public class TestManual {
 				new ExampleAppTelemetry(new MyBitarrayTelemetryTelemetryPayload(bitSet))
 		);
 
-		var telecommand = new Telecommand(
-				20,
+		var telecommand = new CorfuTelecommand(
+				(short) 20,
 				(short) 0,
-				0,
+				0L,
 				new ObcNode(ObcNode.ObcHardware.MT0_ID0),
 				new ExampleAppTelecommand(new IncrementCounterTelecommandPayload((short) 1)));
 
@@ -88,7 +88,7 @@ public class TestManual {
 		System.out.printf("Encoded message size (from JSON string): %d bytes%n", encoded.length());
 
 		// decode
-		var decoded = Json.CODEC.fromString(encoded, Telemetry.class);
+		var decoded = Json.CODEC.fromString(encoded, CorfuTelemetry.class);
 		System.out.println(decoded);
 
 		//
@@ -96,12 +96,12 @@ public class TestManual {
 		//
 
 		// serialize in Corfu binary format
-		var serializer = new MessageSerializer(store);
+		var serializer = new CorfuMessageMapper(store);
 		try {
 			byte[] serializedData = serializer.serialize(telecommand);
 			System.out.println(telecommand);
 			System.out.println(ByteArrayUtils.toString(serializedData));
-		} catch (SerializationException e) {
+		} catch (CorfuSerializationException e) {
 			throw new RuntimeException(e);
 		}
 
@@ -109,7 +109,7 @@ public class TestManual {
 			byte[] serializedData = serializer.serialize(telecommand);
 			System.out.println(telecommand);
 			System.out.println(ByteArrayUtils.toString(serializedData));
-		} catch (SerializationException e) {
+		} catch (CorfuSerializationException e) {
 			throw new RuntimeException(e);
 		}
 
@@ -159,7 +159,7 @@ public class TestManual {
 
 		System.out.printf("Serialized telemetry: %s%n", ByteArrayUtils.toString(serializedTM));
 
-		Telemetry deserializedTM;
+		CorfuTelemetry deserializedTM;
 		try {
 			deserializedTM = serializer.deserialize(serializedTM);
 			System.out.printf("Deserialized telemetry: %s%n", deserializedTM);
@@ -170,7 +170,7 @@ public class TestManual {
 		var jsonEncodedTM = Json.CODEC.toString(deserializedTM);
 		System.out.printf("JSON encoded deserialized telemetry: %s%n", jsonEncodedTM);
 
-		var jsonDecodedTM = Json.CODEC.fromString(jsonEncodedTM, Telemetry.class);
+		var jsonDecodedTM = Json.CODEC.fromString(jsonEncodedTM, CorfuTelemetry.class);
 		System.out.printf("JSON decoded deserialized telemetry: %s%n", jsonDecodedTM);
 	}
 }

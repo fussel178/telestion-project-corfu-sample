@@ -1,6 +1,6 @@
 {
 	"org.telestion.configuration": {
-		"app_name": "##REPO_NAME##",
+		"app_name": "Telestion Corfu Sample",
 		"verticles": [
 			{
 				"name": "Message Logger",
@@ -24,15 +24,47 @@
 				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.UDPTransmitter",
 				"magnitude": 1,
 				"config": {
-					"inAddress": "raw-telecommands",
-					"outAddress": "raw-telemetry",
+					"inAddress": "raw-to-rodos-gateway",
+					"outAddress": "raw-from-rodos-gateway",
 					"downlinkPort": 8669,
 					"uplinkPort": 8670
 				}
 			},
 			{
+				"name": "Rodos Gateway Serializer",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.rodos.verticle.RodosGatewaySerializer",
+				"magnitude": 1,
+				"config": {
+					"inAddress": "pretty-to-rodos-gateway",
+					"outAddress": "raw-to-rodos-gateway"
+				}
+			},
+			{
+				"name": "Rodos Gateway Deserializer",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.rodos.verticle.RodosGatewayDeserializer",
+				"magnitude": 1,
+				"config": {
+					"inAddress": "raw-from-rodos-gateway",
+					"outAddress": "pretty-from-rodos-gateway"
+				}
+			},
+			{
+				"name": "Rodos Gateway Termination",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.rodos.verticle.RodosGatewayTermination",
+				"magnitude": 1,
+				"config": {
+					"gatewayInAddress": "pretty-from-rodos-gateway",
+					"gatewayOutAddress": "pretty-to-rodos-gateway",
+					"dataInAddress": "raw-corfu-telecommand",
+					"dataOutAddress": "raw-corfu-telemetry",
+					"senderNode": 4,
+					"senderThreadId": 0,
+					"topicId": 1025
+				}
+			},
+			{
 				"name": "Corfu Component Registrar",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.CorfuComponentRegistrar",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuComponentRegistrar",
 				"magnitude": 1,
 				"config": {
 					"registrarClassNames": [
@@ -42,20 +74,29 @@
 			},
 			{
 				"name": "Corfu Telecommand Serializer",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.CorfuTelecommandSerializer",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuTelecommandSerializer",
 				"magnitude": 1,
 				"config": {
-					"inAddress": "corfu-telecommands",
-					"outAddress": "raw-telecommands"
+					"inAddress": "pretty-corfu-telecommand",
+					"outAddress": "raw-corfu-telecommand"
 				}
 			},
 			{
 				"name": "Corfu Telemetry Deserializer",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.CorfuTelemetryDeserializer",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuTelemetryDeserializer",
 				"magnitude": 1,
 				"config": {
-					"inAddress": "raw-telemetry",
-					"outAddress": "corfu-telemetry"
+					"inAddress": "raw-corfu-telemetry",
+					"outAddress": "pretty-corfu-telemetry"
+				}
+			},
+			{
+				"name": "Corfu Telecommand Finalizer",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuTelecommandFinalizer",
+				"magnitude": 1,
+				"config": {
+					"inAddress": "template-corfu-telecommand",
+					"outAddress": "pretty-corfu-telecommand"
 				}
 			},
 			{
@@ -63,7 +104,8 @@
 				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.ExampleAppIncrementer",
 				"magnitude": 1,
 				"config": {
-					"outAddress": "corfu-telecommands"
+					"outAddress": "template-corfu-telecommand",
+					"interval": 30000
 				}
 			}
 		]

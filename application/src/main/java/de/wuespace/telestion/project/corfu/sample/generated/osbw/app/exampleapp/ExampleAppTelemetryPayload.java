@@ -2,7 +2,7 @@ package de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.wuespace.telestion.project.corfu.sample.converter.message.AppTelemetryPayload;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.AppTelemetryPayload;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
