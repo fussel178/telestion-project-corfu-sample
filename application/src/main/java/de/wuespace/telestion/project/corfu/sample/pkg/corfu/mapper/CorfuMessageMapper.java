@@ -45,7 +45,7 @@ public class CorfuMessageMapper {
 	/**
 	 * The size of a telecommand header <b>without</b> checksum in bytes.
 	 */
-	public static final int TELECOMMAND_HEADER_SIZE = 25;
+	public static final int TELECOMMAND_HEADER_SIZE = 15;
 
 	/**
 	 * The maximum size of an entire telemetry message in bytes.
@@ -123,7 +123,7 @@ public class CorfuMessageMapper {
 			// extract all data with no checksum
 			var size = stream.position();
 			stream.reset();
-			byte[] serialized = new byte[size];
+			byte[] serialized = new byte[MAX_TELECOMMAND_SIZE];
 			stream.readSignedBytes(serialized);
 
 			// calculate RODOS like checksum and insert it in stream to keep byte order
