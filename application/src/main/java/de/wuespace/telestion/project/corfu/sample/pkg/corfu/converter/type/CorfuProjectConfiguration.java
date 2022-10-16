@@ -1,4 +1,4 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.type;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +8,7 @@ import java.util.List;
  *
  * @author Ludwig Richter (@fussel178)
  */
+@SuppressWarnings("unused")
 public class CorfuProjectConfiguration {
 	public CorfuProjectConfiguration() {
 		// default values

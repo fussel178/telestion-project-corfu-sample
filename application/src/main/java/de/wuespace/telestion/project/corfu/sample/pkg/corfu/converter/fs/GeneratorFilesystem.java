@@ -1,4 +1,4 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.generator;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.fs;
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -33,8 +33,7 @@ dependencies {
     implementation group: 'de.wuespace.telestion', name: 'telestion-examples', version: '0.9.0'
 
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3'
-	implementation 'org.jboss.forge.roaster:roaster-jdt:2.26.0.Final'
-	//implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.24.6'
+	implementation 'com.hubspot.jinjava:jinjava:2.6.0'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'

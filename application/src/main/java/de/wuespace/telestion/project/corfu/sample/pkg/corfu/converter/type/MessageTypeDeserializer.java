@@ -1,11 +1,10 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.type;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdNodeBasedDeserializer;
 
-import java.io.IOException;
-
+@SuppressWarnings("unused")
 public class MessageTypeDeserializer extends StdNodeBasedDeserializer<MessageType> {
 
 	public MessageTypeDeserializer() {
@@ -17,9 +16,9 @@ public class MessageTypeDeserializer extends StdNodeBasedDeserializer<MessageTyp
 	}
 
 	@Override
-	public MessageType convert(JsonNode root, DeserializationContext ctxt) throws IOException {
+	public MessageType convert(JsonNode root, DeserializationContext ctxt) {
 		if (root.isTextual()) {
-			return new MessageType(MessageType.Type.SIMPLE, root.asText(), 1);
+			return new SingleMessageType(root.asText());
 		}
 
 		if (root.isObject()) {
@@ -30,7 +29,7 @@ public class MessageTypeDeserializer extends StdNodeBasedDeserializer<MessageTyp
 					return null;
 				}
 
-				return new MessageType(MessageType.Type.ARRAY,
+				return new ArrayMessageType(
 						property.get("type").asText(),
 						property.get("length").asInt()
 				);
@@ -43,14 +42,10 @@ public class MessageTypeDeserializer extends StdNodeBasedDeserializer<MessageTyp
 					return null;
 				}
 
-				return new MessageType(MessageType.Type.BIT_ARRAY,
-						null,
-						property.get("length").asInt()
-				);
+				return new BitArrayMessageType(property.get("length").asInt());
 			}
 		}
 
-		// don't know what's the type, sorry
-		return null;
+		throw new IllegalArgumentException("Cannot deserialize the following message type: %s".formatted(root));
 	}
 }

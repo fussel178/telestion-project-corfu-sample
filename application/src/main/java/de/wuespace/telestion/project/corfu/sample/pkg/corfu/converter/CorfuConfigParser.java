@@ -1,13 +1,13 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.exception.ParsingException;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.type.AppConfiguration;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.type.CorfuProjectConfiguration;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.type.NodeConfiguration;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.AppConfiguration;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.CorfuProjectConfiguration;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.NodeConfiguration;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.util.PathUtils;
 
 import java.io.IOException;
@@ -128,14 +128,18 @@ public class CorfuConfigParser {
 		List<NodeConfiguration> nodes = new ArrayList<>();
 		try (var stream = Files.list(nodesDir)) {
 			var list = stream.toList();
-			for (Path nodeDir : list) {
-				if (!Files.isDirectory(nodeDir)) {
-					throw new IllegalArgumentException(("The node %s is not a directory. Please remove this file " +
-							"or create a directory with this name and try again.").formatted(nodeDir.toString()));
+			for (Path node : list) {
+				if (Files.isRegularFile(node)) {
+					// try to read file
+					nodes.add(getNodeConfiguration(node, PathUtils.getFileName(node, true)));
+				} else if (Files.isDirectory(node)) {
+					var configPath = node.resolve(NODE_CONFIG_NAME);
+					nodes.add(getNodeConfiguration(configPath, PathUtils.getFileName(node, true)));
+				} else {
+					throw new IllegalArgumentException(("The node %s has an incompatible file type. Please put the " +
+							"node configuration inside the nodes directory or in a directory with the name " +
+							"\"node.yml\" and try again. Compatible: %s").formatted(node, "regular file, directory"));
 				}
-
-				var configPath = nodeDir.resolve(NODE_CONFIG_NAME);
-				nodes.add(getNodeConfiguration(configPath));
 			}
 		} catch (IOException e) {
 			throw new ParsingException("Cannot read list of nodes in node directory %s"
@@ -163,7 +167,11 @@ public class CorfuConfigParser {
 			var config = mapper.readValue(fileContent, AppConfiguration.class);
 
 			// we want the name of the parent folder of the configuration
-			config.name = PathUtils.getFileName(configPath.getParent(), true);
+			config.setName(PathUtils.getFileName(configPath.getParent(), true));
+
+			config.finalizeConfig();
+			config.referenceTypes();
+
 			return config;
 		} catch (StreamReadException e) {
 			throw new ParsingException(("Cannot map raw file content to app configuration. Error in stream " +
@@ -186,7 +194,7 @@ public class CorfuConfigParser {
 	 * @return a node configuration in POJO format
 	 * @throws ParsingException throws when errors during parsing of the configuration files occur
 	 */
-	public NodeConfiguration getNodeConfiguration(Path configPath) throws ParsingException {
+	public NodeConfiguration getNodeConfiguration(Path configPath, String name) throws ParsingException {
 		if (!Files.isRegularFile(configPath)) {
 			throw new IllegalArgumentException(("The node config %s is not a regular file. Please provide " +
 					"a valid node configuration file or remove the entire app directory and try again.")
@@ -198,7 +206,10 @@ public class CorfuConfigParser {
 			var config = mapper.readValue(fileContent, NodeConfiguration.class);
 
 			// we want the name of the parent folder of the configuration
-			config.name = PathUtils.getFileName(configPath.getParent(), true);
+			config.setName(name);
+
+			config.finalizeConfig();
+
 			return config;
 		} catch (StreamReadException e) {
 			throw new ParsingException(("Cannot map raw file content to node configuration. Error in stream " +

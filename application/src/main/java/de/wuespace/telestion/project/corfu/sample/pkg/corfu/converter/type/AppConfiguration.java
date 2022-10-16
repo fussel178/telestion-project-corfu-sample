@@ -1,4 +1,4 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.type;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,13 +25,13 @@ public class AppConfiguration extends Identifiable {
 	/**
 	 * A map of message fields and their names that represent the structs of the app.
 	 */
-	@JsonProperty
+	@JsonProperty("structs")
 	public Map<String, MessageFields> structs;
 
 	/**
 	 * A map of messages and their names that represent the telecommands of the app.
 	 */
-	@JsonProperty
+	@JsonProperty("telecommands")
 	public Map<String, Message> telecommands;
 
 	/**
@@ -45,6 +45,33 @@ public class AppConfiguration extends Identifiable {
 	 */
 	@JsonProperty("standard_telemetry")
 	public MessageFields standardTelemetry;
+
+	public void finalizeConfig() {
+		// give structures their name
+		structs.forEach((key, value) -> {
+			value.setName(key);
+			value.setAssociatedApp(this);
+		});
+		telecommands.forEach((key, value) -> {
+			value.setName(key);
+			value.setAssociatedApp(this);
+			value.finalizeConfig();
+		});
+		extendedTelemetry.forEach((key, value) -> {
+			value.setName(key);
+			value.setAssociatedApp(this);
+			value.finalizeConfig();
+		});
+		standardTelemetry.setName(name.raw());
+	}
+
+	public void referenceTypes() {
+		var references = TypeReference.getReferences(structs.values());
+		structs.forEach((key, value) -> value.resolveType(references));
+		telecommands.forEach((key, value) -> value.resolveType(references));
+		extendedTelemetry.forEach((key, value) -> value.resolveType(references));
+		standardTelemetry.resolveType(references);
+	}
 
 	@Override
 	public String toString() {

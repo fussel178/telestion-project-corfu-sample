@@ -2,9 +2,10 @@ package de.wuespace.telestion.project.corfu.sample.generated.osbw;
 
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeStore;
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp.*;
-import de.wuespace.telestion.project.corfu.sample.generated.osbw.node.ObcNode;
+import de.wuespace.telestion.project.corfu.sample.generated.osbw.node.*;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.global.Registrar;
 
+@SuppressWarnings("unused")
 public class GeneratedRegistrar implements Registrar {
 	@Override
 	public void onRegister(MessageTypeStore store) {
