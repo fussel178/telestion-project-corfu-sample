@@ -7,10 +7,23 @@ import java.lang.annotation.Target;
 import java.math.BigInteger;
 import java.util.BitSet;
 
+/**
+ * Provides additional information for record components in {@link CorfuPayload Corfu payloads}.
+ * It captures the original Corfu / C++ type and the count especially useful for array and bit array Corfu types.
+ *
+ * @author Ludwig Richter (@fussel178)
+ */
 @Target({ElementType.RECORD_COMPONENT})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CorfuProperty {
+	/**
+	 * Holds the original Corfu / C++ type that is associated with this payload component.
+	 */
 	Type value() default Type.OBJECT;
+
+	/**
+	 * Holds the count as defined in the Corfu configuration especially useful for array and bit array Corfu types.
+	 */
 	int count() default 1;
 
 	enum Type {
@@ -51,6 +64,9 @@ public @interface CorfuProperty {
 			return size * count;
 		}
 
+		/**
+		 * Returns the maximum count that is allowed with this Corfu / C++ type.
+		 */
 		public int maxCount() {
 			return maxCount;
 		}
@@ -64,6 +80,11 @@ public @interface CorfuProperty {
 			return suitableType.isAssignableFrom(other);
 		}
 
+		/**
+		 * Verifies, that the given count is within the maximum allowed count of the Corfu / C++ type.
+		 * @param count the count annotated on the payload component
+		 * @return <code>true</code>, if the given count is within the maximum allowed count
+		 */
 		public boolean hasValidCount(int count) {
 			return count <= this.maxCount;
 		}
