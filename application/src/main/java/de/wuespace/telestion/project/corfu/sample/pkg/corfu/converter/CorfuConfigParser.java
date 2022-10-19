@@ -8,6 +8,7 @@ import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.exception.
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.AppConfiguration;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.CorfuProjectConfiguration;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.NodeConfiguration;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.ProjectConfiguration;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.util.PathUtils;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Convenience class to read Corfu configuration files and map them to their POJO counterparts via Jackson.
@@ -39,6 +41,11 @@ public class CorfuConfigParser {
 	 * Name of the directory that holds all nodes in the Corfu project.
 	 */
 	public static final String NODES_DIR_NAME = "nodes";
+
+	/**
+	 * Name of the project configuration file inside the project root.
+	 */
+	public static final String PROJECT_CONFIG_NAME = "project.yml";
 
 	/**
 	 * Name of the configuration file for an app inside an app folder.
@@ -73,13 +80,54 @@ public class CorfuConfigParser {
 					.formatted(projectRootDir.toString()));
 		}
 
+		var projectPath = projectRootDir.resolve(PROJECT_CONFIG_NAME);
 		var appsDir = projectRootDir.resolve(APPS_DIR_NAME);
 		var nodesDir = projectRootDir.resolve(NODES_DIR_NAME);
 
+
+		var projectConfig = getProjectConfiguration(projectPath);
 		var appsConfig = getAppConfigurations(appsDir);
 		var nodesConfig = getNodeConfigurations(nodesDir);
 
-		return new CorfuProjectConfiguration(appsConfig, nodesConfig);
+		// tag app that emits standard telemetry as defined in the project config
+		var standardTelemetryApp = projectConfig.ground.standardTelemetry;
+		try {
+			var found = appsConfig.stream()
+					.filter(app -> app.getName().raw().equals(standardTelemetryApp.app))
+					.findFirst().orElseThrow();
+			found.setStandardTelemetryPayloadId(standardTelemetryApp.payloadId);
+		} catch (NoSuchElementException e) {
+			throw new ParsingException(("The standard telemetry app defined in the project configuration does not " +
+					"exist yet. Please create an app with the name %s or rewrite the project configuration and try " +
+					"again.").formatted(projectConfig.ground.standardTelemetry.app));
+		}
+
+		return new CorfuProjectConfiguration(projectConfig, appsConfig, nodesConfig);
+	}
+
+	public ProjectConfiguration getProjectConfiguration(Path configPath) throws ParsingException {
+		if (!Files.isRegularFile(configPath)) {
+			throw new IllegalArgumentException(("The project config %s is not a regular file. Please provide " +
+					"a valid project configuration file and try again.")
+					.formatted(configPath));
+		}
+
+		try {
+			var fileContent = Files.readString(configPath);
+			return mapper.readValue(fileContent, ProjectConfiguration.class);
+		} catch (StreamReadException e) {
+			throw new ParsingException(("Cannot map raw file content to project configuration. Error in stream " +
+					"processing. Configuration file: %s").formatted(configPath.toString()), e);
+		} catch (DatabindException e) {
+			throw new ParsingException(("Cannot databind generic representation to objects. Error in databind " +
+					"processing. Configuration file: %s").formatted(configPath.toString()), e);
+		} catch (JsonProcessingException e) {
+			throw new ParsingException("Cannot process configuration file. Configuration file: %s"
+					.formatted(configPath.toString()), e);
+		} catch (IOException e) {
+			throw new ParsingException("IO error during filesystem operations. Configuration file: %s"
+					.formatted(configPath.toString()), e);
+		}
 	}
 
 	/**

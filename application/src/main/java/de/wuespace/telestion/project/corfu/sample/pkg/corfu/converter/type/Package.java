@@ -38,6 +38,10 @@ public class Package {
 		return resolve(this, newPackage);
 	}
 
+	public Package resolve(String binaryName) {
+		return resolve(new Package(binaryName));
+	}
+
 	@Override
 	public String toString() {
 		return "Package{" +

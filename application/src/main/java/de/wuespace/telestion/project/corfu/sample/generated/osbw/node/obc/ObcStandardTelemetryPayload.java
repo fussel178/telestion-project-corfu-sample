@@ -1,10 +1,10 @@
 package de.wuespace.telestion.project.corfu.sample.generated.osbw.node.obc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp.ExampleAppStandardTelemetry;
-import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.housekeeper.HousekeeperAppTelemetryPayload;
-import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.timemanager.TimeManagerStandardTelemetry;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuProperty;
+import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp.ExampleAppStandardTelemetry;
+import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.timemanager.TimeManagerStandardTelemetry;
+import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.housekeeper.HousekeeperAppTelemetryPayload;
 
 public record ObcStandardTelemetryPayload(
 		@JsonProperty @CorfuProperty ExampleAppStandardTelemetry exampleApp,

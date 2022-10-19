@@ -17,10 +17,11 @@ public record ComponentName(
 		String raw,
 		String lowerCamelCase,
 		String upperCamelCase,
-		String screamingSnakeCase
+		String screamingSnakeCase,
+		String packageName
 ) {
 	public ComponentName(String raw) {
-		this(raw, toLowerCamelCase(raw), toUpperCamelCase(raw), toScreamingSnakeCase(raw));
+		this(raw, toLowerCamelCase(raw), toUpperCamelCase(raw), toScreamingSnakeCase(raw), toPackageName(raw));
 	}
 
 	public static String toPackageName(String name) {

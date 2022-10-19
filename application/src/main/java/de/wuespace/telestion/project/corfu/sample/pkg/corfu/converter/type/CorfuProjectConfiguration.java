@@ -12,13 +12,23 @@ import java.util.List;
 public class CorfuProjectConfiguration {
 	public CorfuProjectConfiguration() {
 		// default values
-		this(Collections.emptyList(), Collections.emptyList());
+		this(null, Collections.emptyList(), Collections.emptyList());
 	}
 
-	public CorfuProjectConfiguration(List<AppConfiguration> apps, List<NodeConfiguration> nodes) {
+	public CorfuProjectConfiguration(
+			ProjectConfiguration project,
+			List<AppConfiguration> apps,
+			List<NodeConfiguration> nodes
+	) {
+		this.project = project;
 		this.apps = apps;
 		this.nodes = nodes;
 	}
+
+	/**
+	 * The general project configuration.
+	 */
+	public ProjectConfiguration project;
 
 	/**
 	 * A list of apps that the Corfu project provides.
@@ -30,8 +40,16 @@ public class CorfuProjectConfiguration {
 	 */
 	public List<NodeConfiguration> nodes;
 
+	public AppConfiguration getStandardTelemetryApp() {
+		return apps.stream().filter(AppConfiguration::generatesStandardTelemetry).findFirst().orElseThrow();
+	}
+
 	@Override
 	public String toString() {
-		return "CorfuProjectConfiguration{" + "apps=" + apps + ", nodes=" + nodes + '}';
+		return "CorfuProjectConfiguration{" +
+				"project=" + project +
+				", apps=" + apps +
+				", nodes=" + nodes +
+				'}';
 	}
 }

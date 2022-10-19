@@ -8,10 +8,10 @@ import de.wuespace.telestion.project.corfu.sample.generated.osbw.node.obc.ObcNod
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.node.obc.ObcStandardTelemetryPayload;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeStore;
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp.*;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.global.Registrar;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeRegistrar;
 
 @SuppressWarnings("unused")
-public class GeneratedRegistrar implements Registrar {
+public class GeneratedRegistrar implements MessageTypeRegistrar {
 	@Override
 	public void onRegister(MessageTypeStore store) {
 		// nodes

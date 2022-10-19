@@ -29,28 +29,11 @@ public class ByteArrayUtils {
 	 *
 	 * <h2>Example</h2>
 	 *
-	 * <pre>0E 13 29 A4 BC BF FF 07 35 69</pre>
+	 * <pre>[0E 13 29 A4 BC BF FF 07 35 69] (size: 9 bytes)</pre>
 	 *
 	 * @param data the binary array that should be stringified
 	 * @return the stringified version of the binary data
 	 */
-	public static String toHexString(byte[] data) {
-		int iMax = data.length - 1;
-		if (iMax < 0) {
-			return "";
-		}
-
-		var builder = new StringBuilder();
-		for (int i = 0; ; i++) {
-			builder.append(String.format("%02X", data[i]));
-			if (i >= iMax) {
-				return builder.toString();
-			}
-
-			builder.append(" ");
-		}
-	}
-
 	public static String toString(byte[] data) {
 		if (Objects.isNull(data)) return "null";
 

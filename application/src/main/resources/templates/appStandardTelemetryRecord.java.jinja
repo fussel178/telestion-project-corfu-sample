@@ -4,7 +4,7 @@
 package {{ package }};
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import {{ corfu_standard_telemetry_binary_name }};
+import {{ app_standard_telemetry_binary_name }};
 import {{ corfu_property_binary_name }};
 
 import java.util.BitSet;
@@ -20,5 +20,5 @@ public record {{ uppercamelcase_name }}StandardTelemetry(
 {% elif element.corfu_type == "OBJECT" %}    @JsonProperty @CorfuProperty(count = {{ element.count }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
 {% else %}    @JsonProperty @CorfuProperty(value = CorfuProperty.Type.{{ element.corfu_type }}, count = {{ element.count }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
 {% endif %}{% endfor -%}
-) implements CorfuStandardTelemetry {
+) implements AppStandardTelemetry {
 }

@@ -1,8 +1,6 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.global;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store;
 
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeStore;
-
-public interface Registrar {
+public interface MessageTypeRegistrar {
 	/**
 	 * Gets called, when the registrar should register the Corfu components on the message type store.
 	 * @param store the message type store that should receive the Corfu components

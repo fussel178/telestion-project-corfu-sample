@@ -5,7 +5,7 @@ import de.wuespace.telestion.api.verticle.TelestionConfiguration;
 import de.wuespace.telestion.api.verticle.TelestionVerticle;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.global.GlobalCorfuModule;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.global.GlobalStore;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.global.Registrar;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeRegistrar;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -31,7 +31,7 @@ public class CorfuComponentRegistrar extends TelestionVerticle<CorfuComponentReg
 			} catch (ClassNotFoundException e) {
 				logger.error("Cannot find registrar {}. Please check if the given class reference is correct and try again.", className);
 			} catch (ClassCastException e) {
-				logger.error("Registrar {} does not implement the registrar interface {}. Please implement the interface and try again.", className, Registrar.class.getName());
+				logger.error("Registrar {} does not implement the registrar interface {}. Please implement the interface and try again.", className, MessageTypeRegistrar.class.getName());
 			} catch (NoSuchMethodException e) {
 				logger.error("Registrar {} does not provide a default constructor. Please create a constructor without any arguments and try again.", className);
 			} catch (IllegalAccessException e) {
@@ -49,9 +49,9 @@ public class CorfuComponentRegistrar extends TelestionVerticle<CorfuComponentReg
 		logger.info("Successfully initialized global message type store");
 	}
 
-	private Registrar load(String className) throws ClassNotFoundException, ClassCastException, NoSuchMethodException,
+	private MessageTypeRegistrar load(String className) throws ClassNotFoundException, ClassCastException, NoSuchMethodException,
 			InvocationTargetException, InstantiationException, IllegalAccessException {
-		var type = Class.forName(className).asSubclass(Registrar.class);
+		var type = Class.forName(className).asSubclass(MessageTypeRegistrar.class);
 		return type.getConstructor().newInstance();
 	}
 }

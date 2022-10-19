@@ -22,6 +22,20 @@ public class AppConfiguration extends Identifiable {
 		this.standardTelemetry = new MessageFields();
 	}
 
+	private short standardTelemetryPayloadId;
+
+	public void setStandardTelemetryPayloadId(short id) {
+		this.standardTelemetryPayloadId = id;
+	}
+
+	public boolean generatesStandardTelemetry() {
+		return standardTelemetryPayloadId > 0;
+	}
+
+	public short getStandardTelemetryPayloadId() {
+		return standardTelemetryPayloadId;
+	}
+
 	/**
 	 * A map of message fields and their names that represent the structs of the app.
 	 */
@@ -75,11 +89,13 @@ public class AppConfiguration extends Identifiable {
 
 	@Override
 	public String toString() {
-		return "AppConfiguration{" + "structs=" + structs +
+		return "AppConfiguration{" +
+				"standardTelemetryPayloadId=" + standardTelemetryPayloadId +
+				", structs=" + structs +
 				", telecommands=" + telecommands +
 				", extendedTelemetry=" + extendedTelemetry +
 				", standardTelemetry=" + standardTelemetry +
-				", name='" + name + '\'' +
+				", name=" + name +
 				", description='" + description + '\'' +
 				", id=" + id +
 				'}';

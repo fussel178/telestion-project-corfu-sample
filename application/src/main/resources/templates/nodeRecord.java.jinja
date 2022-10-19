@@ -13,19 +13,12 @@ import {{ corfu_node_binary_name }};
  * Description:
  * {{ description }}
  *
- * @param hardware the "obc" hardware that sends or receives the message
+ * @param hardware the "{{ raw_name }}" hardware that sends or receives the message
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record {{ uppercamelcase_name }}Node({{ uppercamelcase_name }}Hardware hardware) implements CorfuNode {
 
-	/**
-	 * The name of the node.
-	 */
 	public static final String NODE_NAME = "{{ raw_name }}";
-
-	/**
-	 * The id of the node as unsigned byte.
-	 */
 	public static final short NODE_ID = {{ id }};
 
 	public enum {{ uppercamelcase_name }}Hardware implements CorfuHardware {
@@ -37,26 +30,17 @@ public record {{ uppercamelcase_name }}Node({{ uppercamelcase_name }}Hardware ha
 			this.id = id;
 		}
 
-		/**
-		 * Returns the hardware id associated with this hardware as unsigned byte.
-		 */
 		@Override
 		public short id() {
 			return id;
 		}
 	}
 
-	/**
-	 * Returns the id of the node as unsigned byte.
-	 */
 	@Override
 	public short id() {
 		return NODE_ID;
 	}
 
-	/**
-	 * Returns the name of the node.
-	 */
 	@Override
 	public String name() {
 		return NODE_NAME;

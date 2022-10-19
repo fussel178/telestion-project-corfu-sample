@@ -25,29 +25,22 @@ public record {{ uppercamelcase_name }}TelecommandPayload(
 {% endif %}{% endfor -%}
 ) implements {{ app_uppercamelcase_name }}TelecommandPayload {
 
-	/**
-	 * The name of the telecommand payload.
-	 */
 	public static final String TELECOMMAND_PAYLOAD_NAME = "{{ raw_name }}";
-
-	/**
-	 * The id of the telecommand payload as unsigned byte.
-	 */
 	public static final short TELECOMMAND_PAYLOAD_ID = {{ id }};
+	public static final short TELECOMMAND_PAYLOAD_NODE_ID = ANY_NODE_ID;
 
-	/**
-	 * Returns the id of the telecommand payload as unsigned byte.
-	 */
 	@Override
 	public short id() {
 		return TELECOMMAND_PAYLOAD_ID;
 	}
 
-	/**
-	 * Returns the name of the telecommand payload.
-	 */
 	@Override
 	public String name() {
 		return TELECOMMAND_PAYLOAD_NAME;
+	}
+
+	@Override
+	public short nodeId() {
+		return TELECOMMAND_PAYLOAD_NODE_ID;
 	}
 }

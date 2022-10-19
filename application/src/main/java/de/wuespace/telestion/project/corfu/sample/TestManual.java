@@ -4,7 +4,6 @@ import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.CorfuMessageM
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.exception.CorfuSerializationException;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.HashMessageTypeStore;
 import de.wuespace.telestion.project.corfu.sample.pkg.util.ByteArrayUtils;
-import de.wuespace.telestion.project.corfu.sample.pkg.util.ReflectionUtils;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.jackson.CorfuModule;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuTelecommand;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuTelemetry;
@@ -37,7 +36,6 @@ public class TestManual {
 
 		System.out.printf("Integer list type: %s%n", intList.getClass().getName());
 		System.out.printf("List is assignable from: %b%n", List.class.isAssignableFrom(intList.getClass()));
-		System.out.printf("List type: %s%n", ReflectionUtils.getListElementType(intListField));
 
 		var bitSet = new BitSet(12);
 
