@@ -8,6 +8,9 @@ package de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message;
  * @author Ludwig Richter (@fussel178)
  */
 public interface CorfuPayload extends CorfuStruct {
+
+	short ANY_NODE_ID = 0xFF;
+
 	/**
 	 * Returns the id of the payload as defined in the Corfu configuration as unsigned byte.
 	 */
@@ -24,7 +27,7 @@ public interface CorfuPayload extends CorfuStruct {
 	 * Only one application (running on the node) "packs" the standard telemetry and sends them to ground.
 	 * This parameter specifies if the payload is a node specific payload and which node is associated.
 	 * <p>
-	 * Note: Return <code>0xFF</code> if the payload is <b>not</b> associated to any particular node.
+	 * Note: Return {@link #ANY_NODE_ID} if the payload is <b>not</b> associated to any particular node.
 	 */
 	short nodeId();
 }

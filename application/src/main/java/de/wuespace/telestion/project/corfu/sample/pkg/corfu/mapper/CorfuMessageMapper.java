@@ -96,6 +96,13 @@ public class CorfuMessageMapper {
 		return payloadMapper;
 	}
 
+	/**
+	 * Serializes a {@link CorfuTelecommand} to its binary format.
+	 *
+	 * @param telecommand the telecommand object that contains the values that should be serialized
+	 * @return the telecommand in its binary format
+	 * @throws CorfuSerializationException if errors happen during serialization
+	 */
 	public byte[] serialize(CorfuTelecommand telecommand) throws CorfuSerializationException {
 		if (Objects.isNull(telecommand)) {
 			throw new IllegalArgumentException("Telecommand cannot be null. " +
@@ -112,16 +119,16 @@ public class CorfuMessageMapper {
 			stream.writeUnsignedShort(telecommand.commandIndex());
 			stream.writeUnsignedByte(telecommand.sequenceCounter());
 			// node
-			nodeMapper.serialize(stream, telecommand.node());
-			// app
-			appMapper.serialize(stream, telecommand.app());
+			stream.writeUnsignedByte(telecommand.node().id());
+			stream.writeUnsignedByte(telecommand.node().hardware().id());
+			stream.writeUnsignedByte(telecommand.app().id());
+			stream.writeUnsignedByte(telecommand.app().payload().id());
 			// global end
 			stream.writeSignedLong(telecommand.timeToExecute());
 			// payload
 			payloadMapper.serialize(stream, telecommand.app().payload());
 
 			// extract all data with no checksum
-			var size = stream.position();
 			stream.reset();
 			byte[] serialized = new byte[MAX_TELECOMMAND_SIZE];
 			stream.readSignedBytes(serialized);
@@ -142,9 +149,14 @@ public class CorfuMessageMapper {
 		}
 	}
 
-	public CorfuTelemetry deserialize(byte[] data)
-			throws PacketTooSmallException, PacketTooLargeException, InvalidCheckSumException, CorfuDeserializationException,
-			InvalidPayloadLengthException, PayloadTooSmallException, PayloadTooLargeException, PayloadMissingException {
+	/**
+	 * Deserializes a {@link CorfuTelemetry} from its binary format to an actual Java object.
+	 *
+	 * @param data the binary format of a {@link CorfuTelemetry}
+	 * @return the instantiated Corfu telemetry object containing all relevant information from the binary format
+	 * @throws CorfuDeserializationException if errors happen during deserialization
+	 */
+	public CorfuTelemetry deserialize(byte[] data) throws CorfuDeserializationException {
 		if (Objects.isNull(data)) {
 			throw new IllegalArgumentException("Byte packet cannot be null. " +
 					"Please provide a valid data packet in byte array format and try again");
@@ -167,7 +179,7 @@ public class CorfuMessageMapper {
 
 			// we don't use unsigned short here because the checksum calculation relies on the 16-bits of the short datatype
 			short sentCheckSum = stream.readSignedShort();
-			// skip 2 bytes because we don't want to calculate with the send checksum
+			// skip 2 bytes because we don't want to calculate the checksum including the send one
 			short calculatedCheckSum = RodosCheckSum.calculateCheckSum(data, 2, data.length - 2);
 
 			if (sentCheckSum != calculatedCheckSum) {
@@ -203,7 +215,7 @@ public class CorfuMessageMapper {
 						.formatted(payloadLength, data.length - TELEMETRY_HEADER_SIZE));
 			}
 
-			var payload = payloadMapper.deserialize(stream, appId, payloadId);
+			var payload = payloadMapper.deserialize(stream, appId, payloadId, nodeId);
 			var app = appMapper.deserialize(appId, payload);
 			var node = nodeMapper.deserialize(nodeId, hardwareId);
 

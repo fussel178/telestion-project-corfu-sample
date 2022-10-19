@@ -5,6 +5,15 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Defaults values that should be used when payload fields inside
+ * {@link de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuPayload CorfuPayloads}
+ * does not have the
+ * {@link de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuProperty CorfuProperty} annotation
+ * and need to be filled in to allow instantiation of the record.
+ *
+ * @author Ludwig Richter (@fussel178)
+ */
 public class DefaultValues {
 	private final static Map<Class<?>, Object> defaults = new HashMap<>();
 

@@ -2,22 +2,26 @@ package de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper;
 
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.exception.CorfuDeserializationException;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.exception.CorfuSerializationException;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuProperty;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.AppTelecommandPayload;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.AppTelemetryPayload;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.*;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeStore;
 import de.wuespace.telestion.project.corfu.sample.pkg.util.stream.PrimitiveInputStream;
 import de.wuespace.telestion.project.corfu.sample.pkg.util.stream.PrimitiveOutputStream;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuPayload;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class implements a Corfu payload transformer that can map
+ * {@link AppTelemetryPayload} and {@link AppTelecommandPayload} from their binary format into a
+ * {@link de.wuespace.telestion.api.message.JsonMessage JsonMessage} format and back.
+ *
+ * @author Ludwig Richter (@fussel178)
+ */
 public class CorfuPayloadMapper {
-	private final Map<Class<? extends CorfuPayload>, PayloadField[]> cachedFields;
-	private final Map<Class<? extends CorfuPayload>, Constructor<? extends CorfuPayload>> cachedConstructors;
+	private final Map<Class<? extends CorfuStruct>, PayloadField[]> cachedFields;
+	private final Map<Class<? extends CorfuStruct>, Constructor<? extends CorfuStruct>> cachedConstructors;
 	private final MessageTypeStore store;
 
 	public CorfuPayloadMapper(MessageTypeStore store) {
@@ -26,7 +30,13 @@ public class CorfuPayloadMapper {
 		this.cachedConstructors = new HashMap<>();
 	}
 
-	public PayloadField[] getPayloadFields(Class<? extends CorfuPayload> type) {
+	/**
+	 * Returns all fields of a {@link CorfuPayload} wrapped in {@link PayloadField} for better handling.
+	 *
+	 * @param type the class type of the {@link CorfuPayload}
+	 * @return fields of the {@link CorfuPayload}
+	 */
+	public PayloadField[] getPayloadFields(Class<? extends CorfuStruct> type) {
 		// return cached result
 		if (cachedFields.containsKey(type)) {
 			return cachedFields.get(type);
@@ -44,7 +54,16 @@ public class CorfuPayloadMapper {
 		return fields;
 	}
 
-	public <T extends CorfuPayload> Constructor<T> getConstructor(Class<T> type) throws NoSuchMethodException {
+	/**
+	 * Returns the constructor for a {@link CorfuPayload} that accepts parameters to fill all record fields.
+	 * (aka the invisible predefined constructor of a {@link Record})
+	 *
+	 * @param type the class type of the {@link CorfuPayload}
+	 * @return the constructor that can create new objects of type {@link CorfuPayload}
+	 * @throws NoSuchMethodException gets thrown if no constructor can be found
+	 *                               that accepts all payload fields as parameters
+	 */
+	public <T extends CorfuStruct> Constructor<T> getConstructor(Class<T> type) throws NoSuchMethodException {
 		// return cached result
 		if (cachedConstructors.containsKey(type)) {
 			// This cast is safe because we only put the right type of constructor in the map later in this method.
@@ -58,24 +77,55 @@ public class CorfuPayloadMapper {
 		return constructor;
 	}
 
+	/**
+	 * Returns the size of the {@link CorfuPayload}.
+	 *
+	 * @param type the class type of the {@link CorfuPayload}
+	 * @return the sum of all payload fields inside the {@link CorfuPayload}
+	 */
 	public int size(Class<? extends CorfuPayload> type) {
 		return PayloadFieldArrays.size(getPayloadFields(type));
 	}
 
+	/**
+	 * Serializes a {@link CorfuPayload} to its binary format.
+	 *
+	 * @param stream  the stream that accepts the encoded binary data
+	 * @param payload the payload object that contains values for all payload fields
+	 * @throws CorfuSerializationException if errors happen during serialization
+	 */
 	public void serialize(PrimitiveOutputStream stream, AppTelecommandPayload payload)
 			throws CorfuSerializationException {
 
 		var fields = getPayloadFields(payload.getClass());
-		PayloadFieldArrays.serialize(fields, payload, stream);
+		PayloadFieldArrays.serialize(fields, stream, payload);
 	}
 
-	public CorfuPayload deserialize(PrimitiveInputStream stream, short appId, short payloadId)
+	/**
+	 * Deserializes a {@link CorfuPayload} from its binary format to an actual Java object.
+	 *
+	 * @param stream    the stream that provides the encoded binary format
+	 * @param appId     the id of the telemetry app extracted from the corfu message header as unsigned byte
+	 * @param payloadId the id of the payload extracted from the corfu message header as unsigned byte
+	 * @param nodeId    the id of the sending node extracted from the corfu message header as unsigned byte
+	 * @return an instantiated Java object that holds the decoded values
+	 * @throws CorfuDeserializationException if errors happen during deserialization
+	 */
+	public CorfuPayload deserialize(PrimitiveInputStream stream, short appId, short payloadId, short nodeId)
 			throws CorfuDeserializationException {
 
-		return deserialize(stream, store.getTelemetryPayloadType(appId, payloadId));
+		return (CorfuPayload) deserialize(stream, store.getTelemetryPayloadType(appId, payloadId, nodeId));
 	}
 
-	public CorfuPayload deserialize(PrimitiveInputStream stream, Class<? extends AppTelemetryPayload> payloadType)
+	/**
+	 * Deserializes a {@link CorfuPayload} from its binary format to an actual Java object.
+	 *
+	 * @param stream      the stream that provides the encoded binary format
+	 * @param payloadType the class type of the {@link CorfuPayload}
+	 * @return an instantiated Java object that holds the decoded values
+	 * @throws CorfuDeserializationException if errors happen during deserialization
+	 */
+	public CorfuStruct deserialize(PrimitiveInputStream stream, Class<? extends CorfuStruct> payloadType)
 			throws CorfuDeserializationException {
 
 		var fields = getPayloadFields(payloadType);
@@ -84,17 +134,21 @@ public class CorfuPayloadMapper {
 		try {
 			return getConstructor(payloadType).newInstance(initArgs);
 		} catch (InvocationTargetException e) {
-			// TODO: Write better exception message
-			throw new RuntimeException(e);
+			throw new CorfuDeserializationException("During instantiation the constructor threw an exception. " +
+					"Please fix the following error and try again:", e);
 		} catch (InstantiationException e) {
-			// TODO: Write better exception message
-			throw new RuntimeException(e);
+			throw new CorfuDeserializationException(("The payload %s is abstract. This is not supported. Please " +
+					"convert the payload to a real class or convert the payload to a record and try again.")
+					.formatted(payloadType.getName()));
 		} catch (IllegalAccessException e) {
-			// TODO: Write better exception message
-			throw new RuntimeException(e);
+			throw new CorfuDeserializationException(("The constructor of payload %s is not accessible. Please make " +
+					"the constructor public and accessible or convert the payload to a record and try again.")
+					.formatted(payloadType.getName()));
 		} catch (NoSuchMethodException e) {
-			// TODO: Write better exception message
-			throw new RuntimeException(e);
+			throw new CorfuDeserializationException(("The payload %s does not provide a constructor that accepts " +
+					"all payload fields as constructor parameters. Please provide this type of constructor or " +
+					"convert the payload to a record and try again. Needed constructor parameters: %s")
+					.formatted(payloadType.getName(), PayloadFieldArrays.toTypeString(fields)));
 		}
 	}
 }

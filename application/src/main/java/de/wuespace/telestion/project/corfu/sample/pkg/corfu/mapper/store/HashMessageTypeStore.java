@@ -5,6 +5,20 @@ import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A reference implementation for the {@link MessageTypeStore} that utilizes {@link HashMap HashMaps}
+ * to store class-id and class-name references for:
+ *
+ * <ul>
+ *     <li>{@link CorfuNode}</li>
+ *     <li>{@link CorfuAppTelemetry}</li>
+ *     <li>{@link AppTelemetryPayload}</li>
+ *     <li>{@link CorfuAppTelecommand}</li>
+ *     <li>{@link AppTelecommandPayload}</li>
+ * </ul>
+ *
+ * @author Ludwig Richter (@fussel178)
+ */
 public class HashMessageTypeStore implements MessageTypeStore {
 	private final Map<String, Class<? extends CorfuNode>> nodeNameStore;
 	private final Map<Short, Class<? extends CorfuNode>> nodeIdStore;
@@ -12,11 +26,11 @@ public class HashMessageTypeStore implements MessageTypeStore {
 
 	private final Map<String, Class<? extends CorfuAppTelemetry>> appTelemetryNameStore;
 	private final Map<Short, Class<? extends CorfuAppTelemetry>> appTelemetryIdStore;
-	private final Map<Short, Class<? extends AppTelemetryPayload>> telemetryPayloadStore;
+	private final Map<Integer, Class<? extends AppTelemetryPayload>> telemetryPayloadStore;
 
 	private final Map<String, Class<? extends CorfuAppTelecommand>> appTelecommandNameStore;
 	private final Map<Short, Class<? extends CorfuAppTelecommand>> appTelecommandIdStore;
-	private final Map<Short, Class<? extends AppTelecommandPayload>> telecommandPayloadStore;
+	private final Map<Integer, Class<? extends AppTelecommandPayload>> telecommandPayloadStore;
 
 	public HashMessageTypeStore() {
 		this.nodeNameStore = new HashMap<>();
@@ -52,6 +66,7 @@ public class HashMessageTypeStore implements MessageTypeStore {
 	public void registerTelemetryPayload(Class<? extends AppTelemetryPayload> payloadClassType,
 										 String payloadName,
 										 short payloadId,
+										 short nodeId,
 										 Class<? extends CorfuAppTelemetry> associatedTelemetryApp) {
 		if (!appTelemetryNameStore.containsValue(associatedTelemetryApp)) {
 			throw new IllegalArgumentException(("The associated telemetry app %s is not yet registered. Please " +
@@ -61,7 +76,7 @@ public class HashMessageTypeStore implements MessageTypeStore {
 
 
 		telemetryPayloadStore.put(
-				payloadKey(getAppTelemetryId(associatedTelemetryApp), payloadId),
+				payloadKey(getAppTelemetryId(associatedTelemetryApp), payloadId, nodeId),
 				payloadClassType
 		);
 	}
@@ -76,6 +91,7 @@ public class HashMessageTypeStore implements MessageTypeStore {
 	public void registerTelecommandPayload(Class<? extends AppTelecommandPayload> payloadClassType,
 										   String payloadName,
 										   short payloadId,
+										   short nodeId,
 										   Class<? extends CorfuAppTelecommand> associatedTelecommandApp) {
 		if (!appTelecommandNameStore.containsValue(associatedTelecommandApp)) {
 			throw new IllegalArgumentException(("The associated telecommand app %s is not yet registered. Please " +
@@ -84,7 +100,7 @@ public class HashMessageTypeStore implements MessageTypeStore {
 		}
 
 		telecommandPayloadStore.put(
-				payloadKey(getAppTelecommandId(associatedTelecommandApp), payloadId),
+				payloadKey(getAppTelecommandId(associatedTelecommandApp), payloadId, nodeId),
 				payloadClassType
 		);
 	}
@@ -140,16 +156,21 @@ public class HashMessageTypeStore implements MessageTypeStore {
 	}
 
 	@Override
-	public Class<? extends AppTelemetryPayload> getTelemetryPayloadType(short appId, short payloadId) {
-		short payloadKey = payloadKey(appId, payloadId);
+	public Class<? extends AppTelemetryPayload> getTelemetryPayloadType(short appId, short payloadId, short nodeId) {
+		int nodeSpecificKey = payloadKey(appId, payloadId, nodeId);
+		int genericKey = payloadKey(appId, payloadId, CorfuPayload.ANY_NODE_ID);
 
-		if (!telemetryPayloadStore.containsKey(payloadKey)) {
+		if (telemetryPayloadStore.containsKey(nodeSpecificKey)) {
+			return telemetryPayloadStore.get(nodeSpecificKey);
+		}
+
+		if (!telemetryPayloadStore.containsKey(genericKey)) {
 			throw new IllegalArgumentException(("Telemetry Payload with id 0x%02X on app with id 0x%02X does not " +
 					"exist. Please register one with id 0x%02X on app with id 0x%02X and try again.")
 					.formatted(payloadId, appId, payloadId, appId));
 		}
 
-		return telemetryPayloadStore.get(payloadKey);
+		return telemetryPayloadStore.get(genericKey);
 	}
 
 	@Override
@@ -173,18 +194,29 @@ public class HashMessageTypeStore implements MessageTypeStore {
 	}
 
 	@Override
-	public Class<? extends AppTelecommandPayload> getTelecommandPayloadType(short appId, short payloadId) {
-		short payloadKey = payloadKey(appId, payloadId);
+	public Class<? extends AppTelecommandPayload> getTelecommandPayloadType(short appId, short payloadId, short nodeId) {
+		int nodeSpecificKey = payloadKey(appId, payloadId, nodeId);
+		int genericKey = payloadKey(appId, payloadId, CorfuPayload.ANY_NODE_ID);
 
-		if (!telecommandPayloadStore.containsKey(payloadKey)) {
+		if (telecommandPayloadStore.containsKey(nodeSpecificKey)) {
+			return telecommandPayloadStore.get(nodeSpecificKey);
+		}
+
+		if (!telecommandPayloadStore.containsKey(genericKey)) {
 			throw new IllegalArgumentException(("Telecommand Payload with id 0x%02X on app with id 0x%02X does not " +
 					"exist. Please register one with id 0x%02X on app with id 0x%02X and try again.")
 					.formatted(payloadId, appId, payloadId, appId));
 		}
 
-		return telecommandPayloadStore.get(payloadKey);
+		return telecommandPayloadStore.get(genericKey);
 	}
 
+	/**
+	 * Returns the id of the registered telemetry app by searching through every registered app.
+	 *
+	 * @param classType the class type of the telemetry app
+	 * @return the id of the telemetry app
+	 */
 	private short getAppTelemetryId(Class<? extends CorfuAppTelemetry> classType) {
 		for (var entry : appTelemetryIdStore.entrySet()) {
 			if (entry.getValue().equals(classType)) {
@@ -197,6 +229,12 @@ public class HashMessageTypeStore implements MessageTypeStore {
 				"the requested class %s.").formatted(classType.getName()));
 	}
 
+	/**
+	 * Returns the id of the registered telecommand app by searching through every registered app.
+	 *
+	 * @param classType the class type of the telecommand app
+	 * @return the id of the telecommand app
+	 */
 	private short getAppTelecommandId(Class<? extends CorfuAppTelecommand> classType) {
 		for (var entry : appTelecommandIdStore.entrySet()) {
 			if (entry.getValue().equals(classType)) {
@@ -209,7 +247,15 @@ public class HashMessageTypeStore implements MessageTypeStore {
 				"the requested class %s.").formatted(classType.getName()));
 	}
 
-	private static short payloadKey(short appId, short payloadId) {
-		return (short) (appId << 8 + payloadId);
+	/**
+	 * Transfer function to calculate the key of the hash map that stores the payloads.
+	 *
+	 * @param appId     the id of the app that provides this payload
+	 * @param payloadId the id of the actual payload
+	 * @param nodeId    the id of the associated node (use {@link CorfuPayload#ANY_NODE_ID} if there is no associated node)
+	 * @return the key for the payload hash map
+	 */
+	private static int payloadKey(short appId, short payloadId, short nodeId) {
+		return (appId << 16) + (payloadId << 8) + nodeId;
 	}
 }

@@ -28,17 +28,17 @@ public @interface CorfuProperty {
 
 	enum Type {
 		// atomic types
-		BOOLEAN(boolean.class, 1, 1),
-		FLOAT(float.class, 4, 1),
-		DOUBLE(double.class, 8, 1),
-		INT8(byte.class, 1, 1),
-		INT16(short.class, 2, 1),
-		INT32(int.class, 4, 1),
-		INT64(long.class, 8, 1),
-		UINT8(short.class, 1, 1),
-		UINT16(int.class, 2, 1),
-		UINT32(long.class, 4, 1),
-		UINT64(BigInteger.class, 8, 1),
+		BOOLEAN(boolean.class, 1, Integer.MAX_VALUE),
+		FLOAT(float.class, 4, Integer.MAX_VALUE),
+		DOUBLE(double.class, 8, Integer.MAX_VALUE),
+		INT8(byte.class, 1, Integer.MAX_VALUE),
+		INT16(short.class, 2, Integer.MAX_VALUE),
+		INT32(int.class, 4, Integer.MAX_VALUE),
+		INT64(long.class, 8, Integer.MAX_VALUE),
+		UINT8(short.class, 1, Integer.MAX_VALUE),
+		UINT16(int.class, 2, Integer.MAX_VALUE),
+		UINT32(long.class, 4, Integer.MAX_VALUE),
+		UINT64(BigInteger.class, 8, Integer.MAX_VALUE),
 		BITARRAY(BitSet.class, 1, Integer.MAX_VALUE),
 		OBJECT(Object.class, 1, Integer.MAX_VALUE);
 
@@ -77,7 +77,7 @@ public @interface CorfuProperty {
 		 * @return <code>true</code>, if the class type is suitable
 		 */
 		public boolean hasSuitableType(Class<?> other) {
-			return suitableType.isAssignableFrom(other);
+			return suitableType.isAssignableFrom(other) || suitableType.arrayType().isAssignableFrom(other);
 		}
 
 		/**
