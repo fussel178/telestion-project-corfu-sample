@@ -17,9 +17,9 @@ import {{ standard_telemetry_app.payload_interface_binary_name }};
  */
 public record {{ uppercamelcase_name }}StandardTelemetryPayload(
 {% for standard_telemetry in standard_telemetries -%}
-    @JsonProperty @CorfuProperty {{ standard_telemetry.class_name }} {{ standard_telemetry.name }}
+    @JsonProperty @CorfuProperty {{ standard_telemetry.class_name }} {{ standard_telemetry.name }}{{ loop.revindex0 > 0 ? "," : "" }}
 {% endfor -%}
-) implements {{ standard_telemetry_app.uppercamelcase_name }}AppTelemetryPayload {
+) implements {{ standard_telemetry_app.uppercamelcase_name }}TelemetryPayload {
 
 	public static final String TELEMETRY_PAYLOAD_NAME = "{{ uppercamelcase_name }}StandardTelemetry";
 

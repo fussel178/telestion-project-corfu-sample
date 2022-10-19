@@ -6,6 +6,7 @@ import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.*;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.Package;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.*;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeRegistrar;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeStore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ public class JinjaTemplateEngine implements TemplateEngine {
 		globalContext.put("corfu_node_binary_name", CorfuNode.class.getName());
 		globalContext.put("corfu_property_binary_name", CorfuProperty.class.getName());
 		globalContext.put("message_type_registrar_binary_name", MessageTypeRegistrar.class.getName());
+		globalContext.put("message_type_store_binary_name", MessageTypeStore.class.getName());
 	}
 
 	@Override
@@ -123,7 +125,7 @@ public class JinjaTemplateEngine implements TemplateEngine {
 		context.put("payloads", payloads);
 
 		return new AppRendering(
-				engine.render(provider.getAppTelecommandPayloadInterfaceTemplate(), context),
+				engine.render(provider.getAppTelemetryPayloadInterfaceTemplate(), context),
 				"%sTelemetryPayload".formatted(config.getName().upperCamelCase()),
 				pkg,
 				config
@@ -238,7 +240,7 @@ public class JinjaTemplateEngine implements TemplateEngine {
 
 	private Map<String, Object> createContext(Package pkg) {
 		Map<String, Object> context = new HashMap<>(globalContext);
-		context.put("package", pkg);
+		context.put("package", pkg.binaryName());
 		return context;
 	}
 
@@ -353,7 +355,7 @@ public class JinjaTemplateEngine implements TemplateEngine {
 				"class_name",
 				rendering.className(),
 				"app_class_name",
-				"%sTelemetry".formatted(rendering.config().getName().upperCamelCase())
+				"%sTelecommand".formatted(rendering.config().getAssociatedApp().getName().upperCamelCase())
 		);
 	}
 
@@ -364,7 +366,7 @@ public class JinjaTemplateEngine implements TemplateEngine {
 				"class_name",
 				rendering.className(),
 				"app_class_name",
-				"%sTelecommand".formatted(rendering.config().getName().upperCamelCase())
+				"%sTelemetry".formatted(rendering.config().getAssociatedApp().getName().upperCamelCase())
 		);
 	}
 }

@@ -28,57 +28,52 @@ import {{ telemetry_payload.binary_name }};
 {% endfor -%}
 
 @SuppressWarnings("unused")
-public class GeneratedRegistrar implements Registrar {
+public class GeneratedRegistrar implements MessageTypeRegistrar {
 	@Override
 	public void onRegister(MessageTypeStore store) {
 		// nodes
-{% for node in nodes -%}
-    store.registerNode(
-        {{ node.class_name }}.class,
-        {{ node.class_name }}.NODE_NAME,
-        {{ node.class_name }}.NODE_ID,
-        {{ node.class_name }}.{{ node.uppercamelcase_name }}Hardware.class
-    );
+{% for node in nodes %}        store.registerNode(
+            {{ node.class_name }}.class,
+            {{ node.class_name }}.NODE_NAME,
+            {{ node.class_name }}.NODE_ID,
+            {{ node.class_name }}.{{ node.uppercamelcase_name }}Hardware.class
+        );
 {% endfor -%}
 
 		// app telecommands
-{% for app_telecommand in app_telecommands -%}
-    store.registerAppTelecommand(
-        {{ app_telecommand.class_name }}.class,
-        {{ app_telecommand.class_name }}.APP_TELECOMMAND_NAME,
-        {{ app_telecommand.class_name }}.APP_TELECOMMAND_ID
-    );
+{% for app_telecommand in app_telecommands %}        store.registerAppTelecommand(
+            {{ app_telecommand.class_name }}.class,
+            {{ app_telecommand.class_name }}.APP_TELECOMMAND_NAME,
+            {{ app_telecommand.class_name }}.APP_TELECOMMAND_ID
+        );
 {% endfor -%}
 
     // app telemetries
-{% for app_telemetry in app_telemetries -%}
-    store.registerAppTelecommand(
-        {{ app_telemetry.class_name }}.class,
-        {{ app_telemetry.class_name }}.APP_TELEMETRY_NAME,
-        {{ app_telemetry.class_name }}.APP_TELEMETRY_ID
-    );
+{% for app_telemetry in app_telemetries %}        store.registerAppTelemetry(
+            {{ app_telemetry.class_name }}.class,
+            {{ app_telemetry.class_name }}.APP_TELEMETRY_NAME,
+            {{ app_telemetry.class_name }}.APP_TELEMETRY_ID
+        );
 {% endfor -%}
 
     // telecommand payloads
-{% for telecommand_payload in telecommand_payloads -%}
-    store.registerTelecommandPayload(
-        {{ telecommand_payload.class_name }},
-        {{ telecommand_payload.class_name }}.TELECOMMAND_PAYLOAD_NAME,
-        {{ telecommand_payload.class_name }}.TELECOMMAND_PAYLOAD_ID,
-        {{ telecommand_payload.class_name }}.TELECOMMAND_PAYLOAD_NODE_ID,
-        {{ telecommand_payload.app_class_name }}
-    );
+{% for telecommand_payload in telecommand_payloads %}        store.registerTelecommandPayload(
+            {{ telecommand_payload.class_name }}.class,
+            {{ telecommand_payload.class_name }}.TELECOMMAND_PAYLOAD_NAME,
+            {{ telecommand_payload.class_name }}.TELECOMMAND_PAYLOAD_ID,
+            {{ telecommand_payload.class_name }}.TELECOMMAND_PAYLOAD_NODE_ID,
+            {{ telecommand_payload.app_class_name }}.class
+        );
 {% endfor -%}
 
     // telemetry payloads
-{% for telemetry_payload in telemetry_payloads -%}
-    store.registerTelemetryPayload(
-        {{ telemetry_payload.class_name }},
-        {{ telemetry_payload.class_name }}.TELEMETRY_PAYLOAD_NAME,
-        {{ telemetry_payload.class_name }}.TELEMETRY_PAYLOAD_ID,
-        {{ telemetry_payload.class_name }}.TELEMETRY_PAYLOAD_NODE_ID,
-        {{ telemetry_payload.app_class_name }}
-    );
-{% endfor -%}
+{% for telemetry_payload in telemetry_payloads %}        store.registerTelemetryPayload(
+            {{ telemetry_payload.class_name }}.class,
+            {{ telemetry_payload.class_name }}.TELEMETRY_PAYLOAD_NAME,
+            {{ telemetry_payload.class_name }}.TELEMETRY_PAYLOAD_ID,
+            {{ telemetry_payload.class_name }}.TELEMETRY_PAYLOAD_NODE_ID,
+            {{ telemetry_payload.app_class_name }}.class
+        );
+{% endfor %}
 	}
 }

@@ -48,7 +48,10 @@ public class TypeReference {
 				Map.entry("uint32_t", UINT32),
 				Map.entry("std::uint32_t", UINT32),
 				Map.entry("uint64_t", UINT64),
-				Map.entry("std::uint64_t", UINT64)
+				Map.entry("std::uint64_t", UINT64),
+				// custom Corfu types,
+				Map.entry("corfu::Anomaly::ID", UINT16),
+				Map.entry("Anomaly::ID", UINT16)
 		);
 	}
 
