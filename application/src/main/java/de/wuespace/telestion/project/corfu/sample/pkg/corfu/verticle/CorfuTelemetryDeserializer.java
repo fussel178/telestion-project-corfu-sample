@@ -52,22 +52,22 @@ public class CorfuTelemetryDeserializer extends CorfuMapperVerticle<CorfuTelemet
 			publish(getConfig().outAddress, telemetry);
 			incrementCounter(Counter.GOOD);
 		} catch (PacketTooSmallException e) {
-			logger.warn(e.getMessage());
+			logger.warn(e.getMessage(), e);
 			incrementCounter(Counter.BAD_PACKET_TO_SMALL);
 		} catch (PacketTooLargeException e) {
-			logger.warn(e.getMessage());
+			logger.warn(e.getMessage(), e);
 			incrementCounter(Counter.BAD_PACKET_TO_LARGE);
 		} catch (InvalidCheckSumException e) {
-			logger.warn(e.getMessage());
+			logger.warn(e.getMessage(), e);
 			incrementCounter(Counter.BAD_INVALID_CHECKSUM);
 		} catch (InvalidPayloadLengthException e) {
-			logger.warn(e.getMessage());
+			logger.warn(e.getMessage(), e);
 			incrementCounter(Counter.BAD_INVALID_PAYLOAD_LENGTH);
 		} catch (CorfuDeserializationException e) {
-			logger.warn(e.getMessage());
+			logger.warn(e.getMessage(), e);
 			incrementCounter(Counter.BAD_DESERIALIZATION);
 		} catch (Exception e) {
-			logger.warn(e.getMessage());
+			logger.warn(e.getMessage(), e);
 			incrementCounter(Counter.BAD_UNKNOWN);
 		}
 	}

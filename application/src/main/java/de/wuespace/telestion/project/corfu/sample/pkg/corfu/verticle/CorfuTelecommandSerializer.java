@@ -51,10 +51,10 @@ public class CorfuTelecommandSerializer extends CorfuMapperVerticle<CorfuTelecom
 			publish(getConfig().outAddress, new RawMessage(serialized));
 			incrementCounter(Counter.GOOD);
 		} catch (CorfuSerializationException e) {
-			logger.warn(e.getMessage());
+			logger.warn(e.getMessage(), e);
 			incrementCounter(Counter.BAD_SERIALIZATION);
 		} catch (Exception e) {
-			logger.warn(e.getMessage());
+			logger.warn(e.getMessage(), e);
 			incrementCounter(Counter.BAD_UNKNOWN);
 		}
 	}
