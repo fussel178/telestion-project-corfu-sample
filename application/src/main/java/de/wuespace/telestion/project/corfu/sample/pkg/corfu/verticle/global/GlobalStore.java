@@ -34,8 +34,9 @@ public class GlobalStore extends HashMessageTypeStore {
 	public synchronized void registerTelemetryPayload(Class<? extends AppTelemetryPayload> payloadClassType,
 													  String payloadName,
 													  short payloadId,
+													  short nodeId,
 													  Class<? extends CorfuAppTelemetry> associatedTelemetryApp) {
-		super.registerTelemetryPayload(payloadClassType, payloadName, payloadId, associatedTelemetryApp);
+		super.registerTelemetryPayload(payloadClassType, payloadName, payloadId, nodeId, associatedTelemetryApp);
 	}
 
 	@Override
@@ -49,7 +50,8 @@ public class GlobalStore extends HashMessageTypeStore {
 	public synchronized void registerTelecommandPayload(Class<? extends AppTelecommandPayload> payloadClassType,
 														String payloadName,
 														short payloadId,
+														short nodeId,
 														Class<? extends CorfuAppTelecommand> associatedTelecommandApp) {
-		super.registerTelecommandPayload(payloadClassType, payloadName, payloadId, associatedTelecommandApp);
+		super.registerTelecommandPayload(payloadClassType, payloadName, payloadId, nodeId, associatedTelecommandApp);
 	}
 }
