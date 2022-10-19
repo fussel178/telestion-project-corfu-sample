@@ -253,7 +253,7 @@ public class PayloadField {
 		}
 	}
 
-	private <T> Object deserializeAsPrimitive(InputStreamFunction<T> function)
+	private Object deserializeAsPrimitive(InputStreamFunction function)
 			throws InputStreamEmptyException {
 
 		if (isArray()) {
