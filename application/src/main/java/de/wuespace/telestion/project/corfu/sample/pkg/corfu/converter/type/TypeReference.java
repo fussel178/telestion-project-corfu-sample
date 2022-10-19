@@ -63,7 +63,7 @@ public class TypeReference {
 	public static Map<String, TypeReference> getReferences(Collection<MessageFields> structs) {
 		Map<String, TypeReference> references = new HashMap<>(primitiveTypeReferences);
 		structs.forEach(fields ->
-				references.put(fields.getName().raw(), new TypeReference(fields.getName().upperCamelCase())));
+				references.put(fields.getName().raw(), new TypeReference(fields.getName().upperCamelCase() + "Struct")));
 
 		return references;
 	}

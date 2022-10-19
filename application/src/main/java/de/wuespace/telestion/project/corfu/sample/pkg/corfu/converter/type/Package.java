@@ -3,6 +3,10 @@ package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type;
 import java.nio.file.Path;
 
 public class Package {
+	public static Package resolve(Package parentPackage, Package newPackage) {
+		return new Package("%s.%s".formatted(parentPackage.binaryName(), newPackage.binaryName()));
+	}
+
 	private final String binaryName;
 
 	private final Path path;
@@ -28,6 +32,10 @@ public class Package {
 
 	public Path path() {
 		return path;
+	}
+
+	public Package resolve(Package newPackage) {
+		return resolve(this, newPackage);
 	}
 
 	@Override

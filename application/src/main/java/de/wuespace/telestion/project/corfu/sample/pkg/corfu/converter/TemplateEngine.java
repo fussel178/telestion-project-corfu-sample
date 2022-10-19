@@ -37,6 +37,11 @@ public class TemplateEngine {
 	public static final Path TELEMETRY_PAYLOAD_RECORD_TEMPLATE =
 			TEMPLATE_DIR.resolve("telemetryPayloadRecord.java.jinja");
 
+	public static final Path APP_STRUCT_RECORD_TEMPLATE = TEMPLATE_DIR.resolve("appStructRecord.java.jinja");
+
+	public static final Path APP_STANDARD_TELEMETRY_RECORD_TEMPLATE =
+			TEMPLATE_DIR.resolve("appStandardTelemetryRecord.java.jinja");
+
 	private final Jinjava engine;
 
 	private String appTelecommandRecordTemplate;
@@ -53,9 +58,13 @@ public class TemplateEngine {
 
 	private String telemetryPayloadRecordTemplate;
 
+	private String appStructRecordTemplate;
+
+	private String appStandardTelemetryRecordTemplate;
+
 	private boolean areTemplatesLoaded;
 
-	private Map<String, Object> globalContext;
+	private final Map<String, Object> globalContext;
 
 	public TemplateEngine() {
 		this.engine = new Jinjava();
@@ -69,6 +78,8 @@ public class TemplateEngine {
 		globalContext.put("corfu_hardware_binary_name", CorfuHardware.class.getName());
 		globalContext.put("corfu_node_binary_name", CorfuNode.class.getName());
 		globalContext.put("corfu_property_binary_name", CorfuProperty.class.getName());
+		globalContext.put("corfu_struct_binary_name", CorfuStruct.class.getName());
+		globalContext.put("corfu_standard_telemetry_binary_name", AppStandardTelemetry.class.getName());
 	}
 
 	public boolean areTemplatesLoaded() {
@@ -89,6 +100,8 @@ public class TemplateEngine {
 		nodeRecordTemplate = loadResource(NODE_RECORD_TEMPLATE);
 		telecommandPayloadRecordTemplate = loadResource(TELECOMMAND_PAYLOAD_RECORD_TEMPLATE);
 		telemetryPayloadRecordTemplate = loadResource(TELEMETRY_PAYLOAD_RECORD_TEMPLATE);
+		appStructRecordTemplate = loadResource(APP_STRUCT_RECORD_TEMPLATE);
+		appStandardTelemetryRecordTemplate = loadResource(APP_STANDARD_TELEMETRY_RECORD_TEMPLATE);
 
 		areTemplatesLoaded = true;
 	}
@@ -140,6 +153,71 @@ public class TemplateEngine {
 		);
 	}
 
+	public Rendering renderAppTelemetryRecord(Package pkg, AppConfiguration config) {
+		loadTemplates();
+
+		// create jinja context
+		Map<String, Object> context = new HashMap<>(globalContext);
+
+		// fill app specific values
+		context.put("package", pkg.binaryName());
+		context.put("raw_name", config.getName().raw());
+		context.put("uppercamelcase_name", config.getName().upperCamelCase());
+		context.put("description", config.getDescription());
+		context.put("id", config.getId());
+
+		return new Rendering(
+				engine.render(appTelemetryRecordTemplate, context),
+				"%sTelemetry".formatted(config.getName().upperCamelCase()),
+				pkg
+		);
+	}
+
+	public Rendering renderAppStructRecord(Package pkg, MessageFields config) {
+		loadTemplates();
+
+		// create jinja context
+		Map<String, Object> context = new HashMap<>(globalContext);
+
+		// fill app specific values
+		context.put("package", pkg.binaryName());
+		context.put("raw_name", config.getName().raw());
+		context.put("uppercamelcase_name", config.getName().upperCamelCase());
+		context.put("app_raw_name", config.getAssociatedApp().getName().raw());
+
+		// create record elements
+		List<?> recordElements = config.content.stream().map(TemplateEngine::messageTypeToMap).toList();
+		context.put("record_elements", recordElements);
+
+		return new Rendering(
+				engine.render(appStructRecordTemplate, context),
+				"%sStruct".formatted(config.getName().upperCamelCase()),
+				pkg
+		);
+	}
+
+	public Rendering renderAppStandardTelemetryRecord(Package pkg, AppConfiguration config) {
+		loadTemplates();
+
+		// create jinja context
+		Map<String, Object> context = new HashMap<>(globalContext);
+
+		// fill app specific values
+		context.put("package", pkg.binaryName());
+		context.put("raw_name", config.getName().raw());
+		context.put("uppercamelcase_name", config.getName().upperCamelCase());
+
+		// create record elements
+		List<?> recordElements = config.standardTelemetry.content.stream().map(TemplateEngine::messageTypeToMap).toList();
+		context.put("record_elements", recordElements);
+
+		return new Rendering(
+				engine.render(appStandardTelemetryRecordTemplate, context),
+				"%sStandardTelemetry".formatted(config.getName().upperCamelCase()),
+				pkg
+		);
+	}
+
 	public Rendering renderAppTelecommandPayloadInterface(Package pkg, AppConfiguration config) {
 		loadTemplates();
 
@@ -158,26 +236,6 @@ public class TemplateEngine {
 		return new Rendering(
 				engine.render(appTelecommandPayloadInterfaceTemplate, context),
 				"%sTelecommandPayload".formatted(config.getName().upperCamelCase()),
-				pkg
-		);
-	}
-
-	public Rendering renderAppTelemetryRecord(Package pkg, AppConfiguration config) {
-		loadTemplates();
-
-	// create jinja context
-		Map<String, Object> context = new HashMap<>(globalContext);
-
-		// fill app specific values
-		context.put("package", pkg.binaryName());
-		context.put("raw_name", config.getName().raw());
-		context.put("uppercamelcase_name", config.getName().upperCamelCase());
-		context.put("description", config.getDescription());
-		context.put("id", config.getId());
-
-		return new Rendering(
-				engine.render(appTelecommandRecordTemplate, context),
-				"%sTelemetry".formatted(config.getName().upperCamelCase()),
 				pkg
 		);
 	}

@@ -3,51 +3,22 @@
 ///
 package {{ package }};
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import {{ corfu_standard_telemetry_binary_name }};
 import {{ corfu_property_binary_name }};
 
 import java.util.BitSet;
 
 /**
- * Represents the telecommand payload "{{ raw_name }}" for app "{{ app_raw_name }}" from the Corfu configuration.
- * <p>
- * Description:
- * {{ description }}
+ * Represents the standard telemetry of the app "{{ raw_name }}" from the Corfu configuration.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record {{ uppercamelcase_name }}TelecommandPayload(
+public record {{ uppercamelcase_name }}StandardTelemetry(
 {% for element in record_elements -%}
 {% if element.count == 1 and element.corfu_type == "OBJECT" %}    @JsonProperty @CorfuProperty {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
 {% elif element.count == 1 %}    @JsonProperty @CorfuProperty(CorfuProperty.Type.{{ element.corfu_type }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
 {% elif element.corfu_type == "OBJECT" %}    @JsonProperty @CorfuProperty(count = {{ element.count }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
 {% else %}    @JsonProperty @CorfuProperty(value = CorfuProperty.Type.{{ element.corfu_type }}, count = {{ element.count }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
 {% endif %}{% endfor -%}
-) implements {{ app_uppercamelcase_name }}TelecommandPayload {
-
-	/**
-	 * The name of the telecommand payload.
-	 */
-	public static final String TELECOMMAND_PAYLOAD_NAME = "{{ raw_name }}";
-
-	/**
-	 * The id of the telecommand payload as unsigned byte.
-	 */
-	public static final short TELECOMMAND_PAYLOAD_ID = {{ id }};
-
-	/**
-	 * Returns the id of the telecommand payload as unsigned byte.
-	 */
-	@Override
-	public short id() {
-		return TELECOMMAND_PAYLOAD_ID;
-	}
-
-	/**
-	 * Returns the name of the telecommand payload.
-	 */
-	@Override
-	public String name() {
-		return TELECOMMAND_PAYLOAD_NAME;
-	}
+) implements CorfuStandardTelemetry {
 }
