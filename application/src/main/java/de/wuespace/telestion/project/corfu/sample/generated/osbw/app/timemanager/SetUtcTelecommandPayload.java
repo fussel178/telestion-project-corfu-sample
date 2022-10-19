@@ -11,6 +11,7 @@ public record SetUtcTelecommandPayload(
 
 	public static final String TELECOMMAND_PAYLOAD_NAME = "SetUtc";
 	public static final short TELECOMMAND_PAYLOAD_ID = 2;
+	public static final short TELECOMMAND_PAYLOAD_NODE_ID = ANY_NODE_ID;
 
 	@Override
 	public short id() {
@@ -20,5 +21,10 @@ public record SetUtcTelecommandPayload(
 	@Override
 	public String name() {
 		return TELECOMMAND_PAYLOAD_NAME;
+	}
+
+	@Override
+	public short nodeId() {
+		return TELECOMMAND_PAYLOAD_NODE_ID;
 	}
 }

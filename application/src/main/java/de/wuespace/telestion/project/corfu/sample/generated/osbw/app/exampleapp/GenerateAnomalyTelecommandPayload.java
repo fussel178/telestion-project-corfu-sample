@@ -7,6 +7,7 @@ public record GenerateAnomalyTelecommandPayload() implements ExampleAppTelecomma
 
 	public static final String TELECOMMAND_PAYLOAD_NAME = "GenerateAnomaly";
 	public static final short TELECOMMAND_PAYLOAD_ID = 2;
+	public static final short TELECOMMAND_PAYLOAD_NODE_ID = ANY_NODE_ID;
 
 	@Override
 	public short id() {
@@ -16,5 +17,10 @@ public record GenerateAnomalyTelecommandPayload() implements ExampleAppTelecomma
 	@Override
 	public String name() {
 		return TELECOMMAND_PAYLOAD_NAME;
+	}
+
+	@Override
+	public short nodeId() {
+		return TELECOMMAND_PAYLOAD_NODE_ID;
 	}
 }

@@ -5,17 +5,16 @@ package de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.AppStandardTelemetry;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuProperty;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuStruct;
+
+import java.util.BitSet;
 
 /**
- * Represents the standard telemetry of the app "example-app" from the Corfu configuration.
- * <p>
- * Description:
- * Blabla
+ * Represents the struct "example" of the app "example-app" from the Corfu configuration.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record ExampleAppStandardTelemetry(
-		@JsonProperty @CorfuProperty(CorfuProperty.Type.UINT8) short counter
-) implements AppStandardTelemetry {
+public record ExampleStruct(
+		@JsonProperty @CorfuProperty(CorfuProperty.Type.UINT8) short testId
+) implements CorfuStruct {
 }

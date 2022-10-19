@@ -8,7 +8,7 @@ import de.wuespace.telestion.api.verticle.trait.WithTiming;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.CorfuTelecommand;
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp.ExampleAppTelecommand;
 import de.wuespace.telestion.project.corfu.sample.generated.osbw.app.exampleapp.IncrementCounterTelecommandPayload;
-import de.wuespace.telestion.project.corfu.sample.generated.osbw.node.ObcNode;
+import de.wuespace.telestion.project.corfu.sample.generated.osbw.node.obc.ObcNode;
 
 import java.time.Duration;
 

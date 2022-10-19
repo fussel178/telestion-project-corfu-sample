@@ -12,6 +12,7 @@ public record MyTelemetryTelemetryPayload(
 
 	public static final String TELEMETRY_PAYLOAD_NAME = "MyTelemetry";
 	public static final short TELEMETRY_PAYLOAD_ID = 1;
+	public static final short TELEMETRY_PAYLOAD_NODE_ID = ANY_NODE_ID;
 
 	@Override
 	public short id() {
@@ -21,5 +22,10 @@ public record MyTelemetryTelemetryPayload(
 	@Override
 	public String name() {
 		return TELEMETRY_PAYLOAD_NAME;
+	}
+
+	@Override
+	public short nodeId() {
+		return TELEMETRY_PAYLOAD_NODE_ID;
 	}
 }

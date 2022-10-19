@@ -26,6 +26,8 @@ public record TwoParametersTelecommandPayload(
 	 */
 	public static final short TELECOMMAND_PAYLOAD_ID = 4;
 
+	public static final short TELECOMMAND_PAYLOAD_NODE_ID = ANY_NODE_ID;
+
 	/**
 	 * Returns the id of the telecommand payload as unsigned byte.
 	 */
@@ -40,5 +42,10 @@ public record TwoParametersTelecommandPayload(
 	@Override
 	public String name() {
 		return TELECOMMAND_PAYLOAD_NAME;
+	}
+
+	@Override
+	public short nodeId() {
+		return TELECOMMAND_PAYLOAD_NODE_ID;
 	}
 }
