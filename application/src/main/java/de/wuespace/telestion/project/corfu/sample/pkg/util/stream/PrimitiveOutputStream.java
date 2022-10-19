@@ -33,10 +33,26 @@ public interface PrimitiveOutputStream {
 	void writeSignedByte(byte data) throws OutputStreamFullException;
 
 	/**
+	 * Writes a signed byte to the output stream.
+	 * @param data the data in signed byte form
+	 */
+	default void writeSignedByte(Byte data) throws OutputStreamFullException {
+		writeSignedByte(data.byteValue());
+	}
+
+	/**
 	 * Writes an unsigned byte to the output stream.
 	 * @param data the data in unsigned byte form
 	 */
 	void writeUnsignedByte(short data) throws OutputStreamFullException;
+
+	/**
+	 * Writes an unsigned byte to the output stream.
+	 * @param data the data in unsigned byte form
+	 */
+	default void writeUnsignedByte(Short data) throws OutputStreamFullException {
+		writeUnsignedByte(data.shortValue());
+	}
 
 	/**
 	 * Writes a signed short to the output stream.
@@ -45,10 +61,26 @@ public interface PrimitiveOutputStream {
 	void writeSignedShort(short data) throws OutputStreamFullException;
 
 	/**
+	 * Writes a signed short to the output stream.
+	 * @param data the data in signed short form
+	 */
+	default void writeSignedShort(Short data) throws OutputStreamFullException {
+		writeSignedShort(data.shortValue());
+	}
+
+	/**
 	 * Writes an unsigned short to the output stream.
 	 * @param data the data in unsigned short form
 	 */
 	void writeUnsignedShort(int data) throws OutputStreamFullException;
+
+	/**
+	 * Writes an unsigned short to the output stream.
+	 * @param data the data in unsigned short form
+	 */
+	default void writeUnsignedShort(Integer data) throws OutputStreamFullException {
+		writeUnsignedShort(data.intValue());
+	}
 
 	/**
 	 * Writes a signed integer to the output stream.
@@ -57,16 +89,40 @@ public interface PrimitiveOutputStream {
 	void writeSignedInteger(int data) throws OutputStreamFullException;
 
 	/**
+	 * Writes a signed integer to the output stream.
+	 * @param data the data in signed integer form
+	 */
+	default void writeSignedInteger(Integer data) throws OutputStreamFullException {
+		writeSignedInteger(data.intValue());
+	}
+
+	/**
 	 * Writes an unsigned integer to the output stream.
 	 * @param data the data in unsigned integer form
 	 */
 	void writeUnsignedInteger(long data) throws OutputStreamFullException;
 
 	/**
+	 * Writes an unsigned integer to the output stream.
+	 * @param data the data in unsigned integer form
+	 */
+	default void writeUnsignedInteger(Long data) throws OutputStreamFullException {
+		writeUnsignedInteger(data.longValue());
+	}
+
+	/**
 	 * Writes a signed long to the output stream.
 	 * @param data the data in signed long form
 	 */
 	void writeSignedLong(long data) throws OutputStreamFullException;
+
+	/**
+	 * Writes a signed long to the output stream.
+	 * @param data the data in signed long form
+	 */
+	default void writeSignedLong(Long data) throws OutputStreamFullException {
+		writeSignedLong(data.longValue());
+	}
 
 	/**
 	 * Writes an unsigned long to the output stream.
@@ -81,16 +137,40 @@ public interface PrimitiveOutputStream {
 	void writeFloat(float data) throws OutputStreamFullException;
 
 	/**
+	 * Writes a float to the output stream.
+	 * @param data the data in float form
+	 */
+	default void writeFloat(Float data) throws OutputStreamFullException {
+		writeFloat(data.floatValue());
+	}
+
+	/**
 	 * Writes a double to the output stream.
 	 * @param data the data in double form
 	 */
 	void writeDouble(double data) throws OutputStreamFullException;
 
 	/**
+	 * Writes a double to the output stream.
+	 * @param data the data in double form
+	 */
+	default void writeDouble(Double data) throws OutputStreamFullException {
+		writeDouble(data.doubleValue());
+	}
+
+	/**
 	 * Writes a boolean to the output stream.
 	 * @param data the data in boolean form
 	 */
 	void writeBoolean(boolean data) throws OutputStreamFullException;
+
+	/**
+	 * Writes a boolean to the output stream.
+	 * @param data the data in boolean form
+	 */
+	default void writeBoolean(Boolean data) throws OutputStreamFullException {
+		writeBoolean(data.booleanValue());
+	}
 
 	/**
 	 * Writes a bitset to the output stream.
