@@ -1,16 +1,16 @@
-package de.wuespace.telestion.project.daedalus2.redis;
+package de.wuespace.telestion.project.corfu.sample.verticle.redis;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.wuespace.telestion.api.verticle.trait.WithEventBus;
-import de.wuespace.telestion.project.daedalus2.redis.base.RedisBaseConfiguration;
-import de.wuespace.telestion.project.daedalus2.redis.base.RedisVerticle;
+import de.wuespace.telestion.project.corfu.sample.verticle.redis.base.RedisBaseConfiguration;
+import de.wuespace.telestion.project.corfu.sample.verticle.redis.base.RedisVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.redis.client.Command;
 import io.vertx.redis.client.RedisAPI;
 
@@ -47,7 +47,7 @@ public class RedisSaver extends RedisVerticle<RedisSaver.Configuration> implemen
 
 		// TODO: Improve usage with ListDeployer (when released in core)
 		var configuration = new Configuration("redis://localhost:6379", 10, List.of("systemT"));
-		vertx.deployVerticle(RedisSaver.class, new DeploymentOptions().setConfig(configuration.json()));
+		vertx.deployVerticle(RedisSaver.class, new DeploymentOptions().setConfig(configuration.toJsonObject()));
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class RedisSaver extends RedisVerticle<RedisSaver.Configuration> implemen
 		logger.debug("Saving message to Redis DB");
 		redisApi.set(List.of(LATEST_PREFIX + address, message.body().toString()));
 		try {
-			var obj = (new ObjectMapper()).readTree(message.body().toString());
+			var obj = DatabindCodec.mapper().readTree(message.body().toString());
 			logger.debug(obj.fieldNames().toString());
 			this.saveNewDataset(redisApi, address, obj, message.headers());
 		} catch (Exception e) {

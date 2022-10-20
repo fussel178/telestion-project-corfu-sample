@@ -1,14 +1,14 @@
-package de.wuespace.telestion.project.daedalus2.redis;
+package de.wuespace.telestion.project.corfu.sample.verticle.redis;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mongodb.lang.NonNull;
 import de.wuespace.telestion.api.message.JsonMessage;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record RedisLatestRequest(
-		@NonNull
 		@JsonProperty List<String> fields
 ) implements JsonMessage {
 	public RedisLatestRequest() {

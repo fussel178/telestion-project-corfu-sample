@@ -28,6 +28,7 @@ dependencies {
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.0-rc1'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.0-rc1'
     implementation "io.vertx:vertx-core:4.3.4"
+	implementation 'io.vertx:vertx-redis-client:4.3.4'
 
 	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
 	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.11'

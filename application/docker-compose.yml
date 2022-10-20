@@ -1,6 +1,14 @@
 version: "3.9"
 
 services:
+  redis:
+      image: "redislabs/redistimeseries:1.6.0"
+      profiles: ["devel-native", "devel-docker", "prod"]
+      restart: unless-stopped
+      ports:
+        # redis connection
+        - "127.0.0.1:6379:6379"
+
   telestion-devel:
     image: "telestion-devel"
     profiles: ["devel-docker"]
