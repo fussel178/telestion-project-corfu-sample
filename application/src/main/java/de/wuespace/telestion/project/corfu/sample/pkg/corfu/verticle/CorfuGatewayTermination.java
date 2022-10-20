@@ -10,6 +10,7 @@ import de.wuespace.telestion.project.corfu.sample.pkg.util.TimeUtils;
 import de.wuespace.telestion.services.connection.rework.RawMessage;
 
 import java.time.Instant;
+import java.util.Arrays;
 
 public class CorfuGatewayTermination extends TelestionVerticle<CorfuGatewayTermination.Configuration>
 		implements WithEventBus {
@@ -22,12 +23,12 @@ public class CorfuGatewayTermination extends TelestionVerticle<CorfuGatewayTermi
 			@JsonProperty String rawTelecommandInAddress,
 			@JsonProperty int senderNode,
 			@JsonProperty long senderThreadId,
-			@JsonProperty long eventTopicId,
-			@JsonProperty long downlinkTelemetryTopicId,
+			@JsonProperty long[] eventTopicIds,
+			@JsonProperty long[] downlinkTelemetryTopicIds,
 			@JsonProperty long uplinkTelecommandTopicId
 	) implements TelestionConfiguration {
 		public Configuration() {
-			this(null, null, null, null, null, 0, 0, 0x603, 0x411, 0x401);
+			this(null, null, null, null, null, 0, 0, new long[]{0x603}, new long[]{0x411}, 0x401);
 		}
 	}
 
@@ -38,21 +39,21 @@ public class CorfuGatewayTermination extends TelestionVerticle<CorfuGatewayTermi
 				getConfig().senderThreadId()
 		);
 
-		logger.info("Corfu events are expected on topic: {}", getConfig().eventTopicId());
-		logger.info("Corfu telemetry are expected on topic: {}", getConfig().downlinkTelemetryTopicId());
+		logger.info("Corfu events are expected on topics: {}", Arrays.toString(getConfig().eventTopicIds()));
+		logger.info("Corfu telemetry are expected on topics: {}", Arrays.toString(getConfig().downlinkTelemetryTopicIds()));
 		logger.info("Corfu telecommand will be send on topic: {}", getConfig().uplinkTelecommandTopicId());
 
 		register(getConfig().gatewayInAddress(), this::handleGatewayMessage, RodosNetworkMessage.class);
 		register(getConfig().rawTelecommandInAddress(), this::handleTelecommand, RawMessage.class);
 	}
 
-	public void handleGatewayMessage(RodosNetworkMessage message) {
+	private void handleGatewayMessage(RodosNetworkMessage message) {
 		logger.debug("New gateway message on topic: {}", message.topicId());
 
-		if (message.topicId() == getConfig().eventTopicId()) {
+		if (Arrays.stream(getConfig().eventTopicIds()).anyMatch(id -> id == message.topicId())) {
 			logger.debug("Received new event message");
 			publish(getConfig().rawEventOutAddress(), new RawMessage(message.userData()));
-		} else if (message.topicId() == getConfig().downlinkTelemetryTopicId()) {
+		} else if (Arrays.stream(getConfig().downlinkTelemetryTopicIds()).anyMatch(id -> id == message.topicId())) {
 			logger.debug("Received new downlink telemetry message");
 			publish(getConfig().rawTelemetryOutAddress(), new RawMessage(message.userData()));
 		} else {
@@ -60,7 +61,7 @@ public class CorfuGatewayTermination extends TelestionVerticle<CorfuGatewayTermi
 		}
 	}
 
-	public void handleTelecommand(RawMessage message) {
+	private void handleTelecommand(RawMessage message) {
 		logger.debug("Send new telecommand on topic: {}", getConfig().uplinkTelecommandTopicId());
 
 		var sentTime = Instant.now();
