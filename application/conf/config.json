@@ -15,7 +15,13 @@
 				"config": {
 					"host": "0.0.0.0",
 					"port": 9870,
-					"inboundPermitted": [],
+					"inboundPermitted": [
+						"request-latest",
+						"request-time-series",
+						"request-keys",
+						"request-time-sync",
+						"pretty-corfu-telecommand"
+					],
 					"outboundPermitted": []
 				}
 			},
@@ -59,7 +65,10 @@
 					"gatewayOutAddress": "pretty-to-rodos-gateway",
 					"rawEventOutAddress": "raw-corfu-event",
 					"rawTelemetryOutAddress": "raw-corfu-telemetry",
-					"rawTelecommandInAddress": "raw-corfu-telecommand"
+					"rawTelecommandInAddress": "raw-corfu-telecommand",
+					"eventTopicIds": [1539],
+					"downlinkTelemetryTopicIds": [1538, 2447],
+					"uplinkTelecommandTopicId": 2337
 				}
 			},
 			{
@@ -100,12 +109,36 @@
 				}
 			},
 			{
-				"name": "Example App Incrementer",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.ExampleAppIncrementer",
+				"name": "Corfu Message to Redis Mapper",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.CorfuMessageRedisMapper",
 				"magnitude": 1,
 				"config": {
-					"outAddress": "template-corfu-telecommand",
-					"interval": 30000
+					"inAddress": "pretty-corfu-telemetry",
+					"outAddress": "corfu/telemetry"
+				}
+			},
+			{
+				"name": "Redis Saver",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.redis.RedisSaver",
+				"magnitude": 1,
+				"config": {
+					"connectionString": "redis://localhost:6379",
+					"reconnectAttempts": 10,
+					"inAddresses": [
+						"corfu/telemetry"
+					]
+				}
+			},
+			{
+				"name": "Redis Request Handler",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.redis.RedisRequestHandler",
+				"magnitude": 4,
+				"config": {
+					"connectionString": "redis://localhost:6379",
+					"reconnectAttempts": 10,
+					"requestLatestAddress": "request-latest",
+					"requestTimeSeriesAddress": "request-time-series",
+					"requestKeysAddress": "request-keys"
 				}
 			}
 		]
