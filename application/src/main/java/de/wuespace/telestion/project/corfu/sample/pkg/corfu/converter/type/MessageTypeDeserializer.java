@@ -22,6 +22,15 @@ public class MessageTypeDeserializer extends StdNodeBasedDeserializer<MessageTyp
 		}
 
 		if (root.isObject()) {
+			if (root.has("type")) {
+				var property = root.get("type");
+				if (!property.isTextual()) {
+					return null;
+				}
+
+				return new SingleMessageType(property.asText());
+			}
+
 			// array test
 			if (root.has("array")) {
 				var property = root.get("array");
