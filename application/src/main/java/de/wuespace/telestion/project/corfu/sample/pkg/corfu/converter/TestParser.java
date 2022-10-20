@@ -15,8 +15,8 @@ import java.nio.file.Path;
 public class TestParser {
 	public static void main(String[] args) throws ParsingException, IOException {
 		// read and connect Corfu configuration from target project
-		//var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-example-obsw");
-		var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-config-converter/sample/innocube");
+		var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-example-obsw");
+		//var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-config-converter/sample/innocube");
 
 		var options = new ParserOptions().addIgnoredNode("fake-transceiver");
 		var parser = new CorfuConfigParser(YAML.getMapper(), options);

@@ -49,17 +49,17 @@
 				}
 			},
 			{
-				"name": "Rodos Gateway Termination",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.rodos.verticle.RodosGatewayTermination",
+				"name": "Corfu Gateway Termination",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuGatewayTermination",
 				"magnitude": 1,
 				"config": {
-					"gatewayInAddress": "pretty-from-rodos-gateway",
-					"gatewayOutAddress": "pretty-to-rodos-gateway",
-					"dataInAddress": "raw-corfu-telecommand",
-					"dataOutAddress": "raw-corfu-telemetry",
 					"senderNode": 4,
 					"senderThreadId": 0,
-					"topicId": 1025
+					"gatewayInAddress": "pretty-from-rodos-gateway",
+					"gatewayOutAddress": "pretty-to-rodos-gateway",
+					"rawEventOutAddress": "raw-corfu-event",
+					"rawTelemetryOutAddress": "raw-corfu-telemetry",
+					"rawTelecommandInAddress": "raw-corfu-telecommand"
 				}
 			},
 			{
