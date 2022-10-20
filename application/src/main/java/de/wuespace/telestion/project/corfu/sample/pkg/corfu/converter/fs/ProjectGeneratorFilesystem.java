@@ -1,9 +1,11 @@
 package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.fs;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Comparator;
 
 public record ProjectGeneratorFilesystem(Path basePath) implements GeneratorFilesystem {
 	public ProjectGeneratorFilesystem {
@@ -25,6 +27,20 @@ public record ProjectGeneratorFilesystem(Path basePath) implements GeneratorFile
 		// write string to file, create it, when it not exists and overwrite existing content
 		Files.deleteIfExists(fullPath);
 		Files.writeString(fullPath, content, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+	}
+
+	@Override
+	public void delete(Path path) throws IOException {
+		if (path.isAbsolute()) {
+			throw new IllegalArgumentException(("Path %s cannot be absolute. Please provide a relative file " +
+					"path and try again.").formatted(path.toString()));
+		}
+
+		var fullPath = basePath.resolve(path);
+		try (var stream = Files.walk(fullPath)) {
+			//noinspection ResultOfMethodCallIgnored
+			stream.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+		}
 	}
 
 	private void createDirectory(Path path) throws IOException {

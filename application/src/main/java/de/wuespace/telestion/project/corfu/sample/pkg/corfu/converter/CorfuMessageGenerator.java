@@ -18,6 +18,7 @@ public class CorfuMessageGenerator {
 
 	private final GeneratorFilesystem fs;
 	private final TemplateEngine engine;
+	private final Package basePkg;
 
 	public final List<PayloadRendering> renderedTelecommandPayloads;
 	public final List<PayloadRendering> renderedTelemetryPayloads;
@@ -27,9 +28,10 @@ public class CorfuMessageGenerator {
 	public final Map<String, AppRendering> renderedAppStandardTelemetries;
 	public AppRendering payloadInterface;
 
-	public CorfuMessageGenerator(GeneratorFilesystem fs, TemplateEngine engine) {
+	public CorfuMessageGenerator(GeneratorFilesystem fs, TemplateEngine engine, Package basePkg) {
 		this.fs = fs;
 		this.engine = engine;
+		this.basePkg = basePkg;
 		this.renderedTelecommandPayloads = new ArrayList<>();
 		this.renderedTelemetryPayloads = new ArrayList<>();
 		this.renderedAppTelecommands = new ArrayList<>();
@@ -39,13 +41,15 @@ public class CorfuMessageGenerator {
 		this.payloadInterface = null;
 	}
 
-	public void reset() {
+	public void reset() throws IOException {
 		this.renderedTelecommandPayloads.clear();
 		this.renderedTelemetryPayloads.clear();
 		this.renderedAppTelecommands.clear();
 		this.renderedAppTelemetries.clear();
 		this.renderedNodes.clear();
 		this.payloadInterface = null;
+
+		fs.delete(basePkg.path());
 	}
 
 	public GeneratorFilesystem getGeneratorFilesystem() {
@@ -54,6 +58,10 @@ public class CorfuMessageGenerator {
 
 	public TemplateEngine getEngine() {
 		return engine;
+	}
+
+	public Package getBasePkg() {
+		return basePkg;
 	}
 
 	public boolean generatesStandardTelemetry() {
@@ -87,11 +95,10 @@ public class CorfuMessageGenerator {
 	 *     <li>generate registrar</li>
 	 * </ol>
 	 *
-	 * @param basePkg
 	 * @param config
 	 * @throws IOException gets thrown when errors happen during filesystem operations
 	 */
-	public void generate(Package basePkg, CorfuProjectConfiguration config) throws IOException {
+	public void generate(CorfuProjectConfiguration config) throws IOException {
 		reset();
 
 		var appsPkg = basePkg.resolve(APPS_PKG);

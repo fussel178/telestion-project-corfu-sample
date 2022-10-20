@@ -28,4 +28,12 @@ public interface GeneratorFilesystem {
 	default void writeFile(Rendering rendering) throws IOException {
 		writeFile(rendering.pkg().path().resolve(rendering.className() + ".java"), rendering.rendering());
 	}
+
+	/**
+	 * Deletes a file or directory recursively.
+	 *
+	 * @param path the path to the file or directory that should be deleted.
+	 * @throws IOException gets thrown when errors happen during filesystem operations
+	 */
+	void delete(Path path) throws IOException;
 }
