@@ -23,6 +23,7 @@ public record ProjectGeneratorFilesystem(Path basePath) implements GeneratorFile
 		var fullPath = basePath.resolve(filePath);
 		createDirectory(fullPath.getParent());
 		// write string to file, create it, when it not exists and overwrite existing content
+		Files.deleteIfExists(fullPath);
 		Files.writeString(fullPath, content, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 	}
 
