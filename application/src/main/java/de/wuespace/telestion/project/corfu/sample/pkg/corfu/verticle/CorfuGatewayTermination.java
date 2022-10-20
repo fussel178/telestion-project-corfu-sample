@@ -28,7 +28,18 @@ public class CorfuGatewayTermination extends TelestionVerticle<CorfuGatewayTermi
 			@JsonProperty long uplinkTelecommandTopicId
 	) implements TelestionConfiguration {
 		public Configuration() {
-			this(null, null, null, null, null, 0, 0, new long[]{0x603}, new long[]{0x411}, 0x401);
+			this(
+					null,
+					null,
+					null,
+					null,
+					null,
+					0,
+					0,
+					new long[]{0x603},
+					new long[]{0x411},
+					0x401
+			);
 		}
 	}
 
