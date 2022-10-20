@@ -9,7 +9,7 @@ import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.AppCo
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.CorfuProjectConfiguration;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.NodeConfiguration;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.ProjectConfiguration;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.util.PathUtils;
+import de.wuespace.telestion.project.corfu.sample.pkg.util.PathUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
