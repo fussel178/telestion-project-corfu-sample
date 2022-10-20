@@ -11,6 +11,8 @@ import {{ standard_telemetry.binary_name }};
 {% endfor -%}
 // import app payload interface that sends the standard telemetry
 import {{ standard_telemetry_app.payload_interface_binary_name }};
+// internal imports
+import {{ package }}.{{ uppercamelcase_name }}Node;
 
 /**
  * Represents the standard telemetry of the node "{{ raw_name }}" from the Corfu configuration.

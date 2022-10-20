@@ -6,6 +6,7 @@ import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.t
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.type.NodeRendering;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.type.PayloadRendering;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.CorfuProjectConfiguration;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.Message;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.Package;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class CorfuMessageGenerator {
 	public final List<AppRendering> renderedAppTelemetries;
 	public final List<NodeRendering> renderedNodes;
 	public final Map<String, AppRendering> renderedAppStandardTelemetries;
+	public final List<NodeRendering> renderedNodeStandardTelemetries;
 	public AppRendering payloadInterface;
 
 	public CorfuMessageGenerator(GeneratorFilesystem fs, TemplateEngine engine, Package basePkg) {
@@ -38,6 +40,7 @@ public class CorfuMessageGenerator {
 		this.renderedAppTelemetries = new ArrayList<>();
 		this.renderedNodes = new ArrayList<>();
 		this.renderedAppStandardTelemetries = new HashMap<>();
+		this.renderedNodeStandardTelemetries = new ArrayList<>();
 		this.payloadInterface = null;
 	}
 
@@ -47,6 +50,8 @@ public class CorfuMessageGenerator {
 		this.renderedAppTelecommands.clear();
 		this.renderedAppTelemetries.clear();
 		this.renderedNodes.clear();
+		this.renderedAppStandardTelemetries.clear();
+		this.renderedNodeStandardTelemetries.clear();
 		this.payloadInterface = null;
 
 		fs.delete(basePkg.path());
@@ -184,6 +189,7 @@ public class CorfuMessageGenerator {
 			if (generatesStandardTelemetry()) {
 				// 2.2: Generate node standard telemetry
 				System.out.printf("  + node standard telemetry%n");
+				// create list of app standard telemetries that the node standard telemetry use
 				var appStandardTelemetryRenderings = node.apps.keySet().stream()
 						.map(renderedAppStandardTelemetries::get)
 						.toList();
@@ -193,12 +199,31 @@ public class CorfuMessageGenerator {
 						appStandardTelemetryRenderings,
 						payloadInterface
 				);
+				renderedNodeStandardTelemetries.add(nodeStandardTelemetryRendering);
+
+				var telemetryPayloadConfig = new Message();
+				telemetryPayloadConfig.setName("placeholder_message_for_standard_telemetry");
+				telemetryPayloadConfig.setAssociatedApp(payloadInterface.config());
+				telemetryPayloadConfig.finalizeConfig();
+				renderedTelemetryPayloads.add(new PayloadRendering(
+						nodeStandardTelemetryRendering.rendering(),
+						nodeStandardTelemetryRendering.className(),
+						nodeStandardTelemetryRendering.pkg(),
+						telemetryPayloadConfig
+				));
 				fs.writeFile(nodeStandardTelemetryRendering);
 			}
 		}
 
 		// 3: Overwrite standard telemetry application
-		// TODO!
+		if (generatesStandardTelemetry()) {
+			var app = payloadInterface.config();
+			var appPkg = appsPkg.resolve(app.getName().packageName());
+			System.out.printf("insert standard telemetry in payload interface for app %s%n", app.getName().raw());
+
+			var tmInterfaceRendering = engine.renderAppTelemetryPayloadInterface(appPkg, app, renderedNodeStandardTelemetries);
+			fs.writeFile(tmInterfaceRendering);
+		}
 
 		// 4: Generate registrar
 		System.out.printf("generate registrar%n");

@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import {{ app_telecommand_payload_binary_name }};
 
+// internal imports
+{% for payload in payloads %}import {{ package }}.{{ payload.class_name }};
+{% endfor %}
 /**
  * Telecommand payload for the app telecommand "{{ raw_name }}".
  */

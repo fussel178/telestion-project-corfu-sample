@@ -19,6 +19,8 @@ public interface TemplateEngine {
 
 	AppRendering renderAppTelemetryPayloadInterface(Package pkg, AppConfiguration config);
 
+	AppRendering renderAppTelemetryPayloadInterface(Package pkg, AppConfiguration config, List<NodeRendering> nodePayloads);
+
 	AppRendering renderAppTelecommandRecord(Package pkg, AppConfiguration config);
 
 	AppRendering renderAppTelemetryRecord(Package pkg, AppConfiguration config);

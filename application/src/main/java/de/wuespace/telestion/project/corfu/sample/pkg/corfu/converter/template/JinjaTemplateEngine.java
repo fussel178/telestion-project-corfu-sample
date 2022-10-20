@@ -8,6 +8,7 @@ import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.message.*;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeRegistrar;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.mapper.store.MessageTypeStore;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,11 +119,19 @@ public class JinjaTemplateEngine implements TemplateEngine {
 
 	@Override
 	public AppRendering renderAppTelemetryPayloadInterface(Package pkg, AppConfiguration config) {
+		return renderAppTelemetryPayloadInterface(pkg, config, Collections.emptyList());
+	}
+
+	@Override
+	public AppRendering renderAppTelemetryPayloadInterface(Package pkg, AppConfiguration config, List<NodeRendering> nodePayloads) {
 		var context = createContext(pkg, config);
 
 		// create telecommand payload list
 		List<?> payloads = config.extendedTelemetry.values().stream().map(JinjaTemplateEngine::telemetryToMap).toList();
 		context.put("payloads", payloads);
+
+		List<?> mapped = nodePayloads.stream().map(JinjaTemplateEngine::renderedNodeToMap).toList();
+		context.put("node_payloads", mapped);
 
 		return new AppRendering(
 				engine.render(provider.getAppTelemetryPayloadInterfaceTemplate(), context),

@@ -6,6 +6,9 @@ package {{ package }};
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import {{ corfu_app_telemetry_binary_name }};
 
+// internal imports
+import {{ package }}.{{ uppercamelcase_name }}TelemetryPayload;
+
 /**
  * Represents the app telemetry "{{ raw_name }}" from the Corfu configuration.
  * <p>

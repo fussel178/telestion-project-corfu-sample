@@ -8,6 +8,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import {{ corfu_property_binary_name }};
 import {{ corfu_struct_binary_name }};
 
+// internal imports
+{% for element in record_elements -%}
+{% if element.corfu_type == "OBJECT" %}import {{ package }}.{{ element.java_type }};
+{% endif %}{% endfor %}
 import java.math.BigInteger;
 import java.util.BitSet;
 
