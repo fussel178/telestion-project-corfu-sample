@@ -42,6 +42,14 @@ public class CorfuComponentRegistrar extends TelestionVerticle<CorfuComponentReg
 				logger.error("The registrar {} threw an exception during creation. Please fix the following exception and try again: {}", className, e);
 			}
 		}
+		logger.info(
+				"Registered {} nodes, {} app telemetries, {} app telecommands, {} telemetry payloads, {} telecommand payloads",
+				GlobalStore.store().numberOfNodes(),
+				GlobalStore.store().numberOfAppTelemetries(),
+				GlobalStore.store().numberOfAppTelecommands(),
+				GlobalStore.store().numberOfTelemetryPayloads(),
+				GlobalStore.store().numberOfTelecommandPayloads()
+		);
 
 		logger.info("Load Corfu Jackson Serializers");
 		GlobalCorfuModule.register();
