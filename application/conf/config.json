@@ -68,7 +68,7 @@
 				"magnitude": 1,
 				"config": {
 					"registrarClassNames": [
-						"de.wuespace.telestion.project.corfu.sample.generated.osbw.GeneratedRegistrar"
+						"de.wuespace.telestion.project.corfu.sample.auto.GeneratedRegistrar"
 					]
 				}
 			},

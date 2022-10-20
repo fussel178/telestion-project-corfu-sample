@@ -349,6 +349,31 @@ public class HashMessageTypeStore implements MessageTypeStore {
 		return telecommandPayloadStore.get(genericKey);
 	}
 
+	@Override
+	public int numberOfNodes() {
+		return nodeNameStore.size();
+	}
+
+	@Override
+	public int numberOfAppTelemetries() {
+		return appTelemetryNameStore.size();
+	}
+
+	@Override
+	public int numberOfAppTelecommands() {
+		return appTelecommandNameStore.size();
+	}
+
+	@Override
+	public int numberOfTelemetryPayloads() {
+		return telemetryPayloadStore.size();
+	}
+
+	@Override
+	public int numberOfTelecommandPayloads() {
+		return telecommandPayloadStore.size();
+	}
+
 	/**
 	 * Returns the id of the registered telemetry app by searching through every registered app.
 	 *

@@ -247,4 +247,29 @@ public interface MessageTypeStore {
 	 * @return the payload class type (e.g. <code>IncrementCounterTelecommandPayload.class</code>)
 	 */
 	Class<? extends AppTelecommandPayload> getTelecommandPayloadType(short appId, short payloadId, short nodeId);
+
+	/**
+	 * Returns the number of registered nodes in the store.
+	 */
+	int numberOfNodes();
+
+	/**
+	 * Returns the number of registered app telemetries in the store.
+	 */
+	int numberOfAppTelemetries();
+
+	/**
+	 * Returns the number of registered app telecommands in the store.
+	 */
+	int numberOfAppTelecommands();
+
+	/**
+	 * Returns the number of registered telemetry payloads in the store.
+	 */
+	int numberOfTelemetryPayloads();
+
+	/**
+	 * Returns the number of registered telecommand payloads in the store.
+	 */
+	int numberOfTelecommandPayloads();
 }
