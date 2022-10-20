@@ -12,7 +12,7 @@ import {{ app_telemetry_payload_binary_name }};
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-{% for payload in payloads %}    @JsonSubTypes.Type(value = {{ payload.class_name }}.class, name = {{ payload.class_name }}.TELEMETRY_PAYLOAD_NAME),
+{% for payload in payloads %}		@JsonSubTypes.Type(value = {{ payload.class_name }}.class, name = {{ payload.class_name }}.TELEMETRY_PAYLOAD_NAME),
 {% endfor -%}
 })
 public interface {{ uppercamelcase_name }}TelemetryPayload extends AppTelemetryPayload {

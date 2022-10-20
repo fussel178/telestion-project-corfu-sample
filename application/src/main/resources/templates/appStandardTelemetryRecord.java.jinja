@@ -16,10 +16,10 @@ import java.util.BitSet;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record {{ uppercamelcase_name }}StandardTelemetry(
 {% for element in record_elements -%}
-{% if element.count == 1 and element.corfu_type == "OBJECT" %}    @JsonProperty @CorfuProperty {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
-{% elif element.count == 1 %}    @JsonProperty @CorfuProperty(CorfuProperty.Type.{{ element.corfu_type }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
-{% elif element.corfu_type == "OBJECT" %}    @JsonProperty @CorfuProperty(count = {{ element.count }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
-{% else %}    @JsonProperty @CorfuProperty(value = CorfuProperty.Type.{{ element.corfu_type }}, count = {{ element.count }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
+{% if element.count == 1 and element.corfu_type == "OBJECT" %}		@JsonProperty @CorfuProperty {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
+{% elif element.count == 1 %}		@JsonProperty @CorfuProperty(CorfuProperty.Type.{{ element.corfu_type }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
+{% elif element.corfu_type == "OBJECT" %}		@JsonProperty @CorfuProperty(count = {{ element.count }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
+{% else %}		@JsonProperty @CorfuProperty(value = CorfuProperty.Type.{{ element.corfu_type }}, count = {{ element.count }}) {{ element.java_type }}{{ element.is_array ? "[]" : "" }} {{ element.lowercamelcase_name }}{{ loop.revindex0 > 0 ? "," : "" }}
 {% endif %}{% endfor -%}
 ) implements AppStandardTelemetry {
 }

@@ -17,7 +17,7 @@ import {{ standard_telemetry_app.payload_interface_binary_name }};
  */
 public record {{ uppercamelcase_name }}StandardTelemetryPayload(
 {% for standard_telemetry in standard_telemetries -%}
-    @JsonProperty @CorfuProperty {{ standard_telemetry.class_name }} {{ standard_telemetry.name }}{{ loop.revindex0 > 0 ? "," : "" }}
+		@JsonProperty @CorfuProperty {{ standard_telemetry.class_name }} {{ standard_telemetry.name }}{{ loop.revindex0 > 0 ? "," : "" }}
 {% endfor -%}
 ) implements {{ standard_telemetry_app.uppercamelcase_name }}TelemetryPayload {
 
