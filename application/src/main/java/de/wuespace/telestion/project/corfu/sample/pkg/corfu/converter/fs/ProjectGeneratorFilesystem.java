@@ -37,6 +37,10 @@ public record ProjectGeneratorFilesystem(Path basePath) implements GeneratorFile
 		}
 
 		var fullPath = basePath.resolve(path);
+		if (!Files.exists(fullPath)) {
+			return;
+		}
+
 		try (var stream = Files.walk(fullPath)) {
 			//noinspection ResultOfMethodCallIgnored
 			stream.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
