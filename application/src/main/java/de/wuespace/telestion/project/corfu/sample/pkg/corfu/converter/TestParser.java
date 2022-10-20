@@ -2,6 +2,8 @@ package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter;
 
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.exception.ParsingException;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.fs.ProjectGeneratorFilesystem;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.CorfuConfigParser;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.ParserOptions;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.JinjaTemplateEngine;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.ResourceTemplateProvider;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.Package;
@@ -9,28 +11,14 @@ import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.Packa
 import java.io.IOException;
 import java.nio.file.Path;
 
-/**
- * Steps in which order to generate Corfu definitions:
- * for each app:
- *    generate structs (records)
- *    generate standard telemetry (record)
- *    generate all telecommand payloads (records)
- *    generate all telemetry payloads (records)
- *    generate telecommand payload interface (interface)
- *    generate telemetry payload interface (interface)
- *    generate app telecommand (record)
- *    generate app telemetry (record)
- * for each node:
- *    generate node (record)
- *    generate node standard telemetry as telemetry payload interface from std telemetry app (record, DON'T forget nodeId)
- * generate standard telemetry payload interface in defined app
- */
 public class TestParser {
 	public static void main(String[] args) throws ParsingException, IOException {
 		// read and connect Corfu configuration from target project
 		var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-example-obsw");
 		// var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-config-converter/sample/innocube");
-		var parser = new CorfuConfigParser(YAML.getMapper());
+
+		var options = new ParserOptions().addIgnoredNode("fake-transceiver");
+		var parser = new CorfuConfigParser(YAML.getMapper(), options);
 		var config = parser.getProjectConfig(projectRootDir);
 
 		// generate Corfu messages based on Corfu configuration

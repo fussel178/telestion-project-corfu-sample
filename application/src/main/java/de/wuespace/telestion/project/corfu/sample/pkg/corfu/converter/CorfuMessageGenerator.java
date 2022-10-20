@@ -60,6 +60,37 @@ public class CorfuMessageGenerator {
 		return Objects.nonNull(payloadInterface);
 	}
 
+	/**
+	 * Steps in which order to generate Corfu definitions:
+	 * <ol>
+	 *     <li>
+	 *         for each app:
+	 *         <ol>
+	 *             <li>generate structs (records)</li>
+	 *             <li>generate standard telemetry (record)</li>
+	 *             <li>generate all telecommand payloads (records)</li>
+	 *             <li>generate all telemetry payloads (records)</li>
+	 *             <li>generate telecommand payload interface (interface)</li>
+	 *             <li>generate telemetry payload interface (interface)</li>
+	 *             <li>generate app telecommand (record)</li>
+	 *             <li>generate app telemetry (record)</li>
+	 *         </ol>
+	 *     </li>
+	 *     <li>
+	 *         for each node:
+	 *         <ol>
+	 *             <li>generate node + hardware (record + enum)</li>
+	 *             <li>generate node standard telemetry (record)</li>
+	 *         </ol>
+	 *     </li>
+	 *     <li>regenerate standard telemetry app telemetry payload interface (interface)</li>
+	 *     <li>generate registrar</li>
+	 * </ol>
+	 *
+	 * @param basePkg
+	 * @param config
+	 * @throws IOException gets thrown when errors happen during filesystem operations
+	 */
 	public void generate(Package basePkg, CorfuProjectConfiguration config) throws IOException {
 		reset();
 
