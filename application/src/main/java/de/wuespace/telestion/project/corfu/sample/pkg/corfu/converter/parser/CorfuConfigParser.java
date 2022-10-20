@@ -157,7 +157,7 @@ public class CorfuConfigParser {
 		try (var stream = Files.list(appsDir)) {
 			var list = stream.toList();
 			for (Path appDir : list) {
-				var appName = appDir.getFileName().toString();
+				var appName = PathUtils.getFileName(appDir, true);
 				if (options.getIgnoredApps().contains(appName)) {
 					System.err.printf("Ignoring application %s%n", appName);
 					continue;
@@ -194,7 +194,7 @@ public class CorfuConfigParser {
 		try (var stream = Files.list(nodesDir)) {
 			var list = stream.toList();
 			for (Path node : list) {
-				var nodeName = node.getFileName().toString();
+				var nodeName = PathUtils.getFileName(node, true);
 				if (options.getIgnoredNodes().contains(nodeName)) {
 					System.err.printf("Ignoring node %s%n", nodeName);
 					continue;
