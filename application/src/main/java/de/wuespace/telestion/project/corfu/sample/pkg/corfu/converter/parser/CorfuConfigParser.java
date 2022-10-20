@@ -1,4 +1,4 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -58,13 +58,24 @@ public class CorfuConfigParser {
 	public static final String NODE_CONFIG_NAME = "node.yml";
 
 	private final ObjectMapper mapper;
+	private final ParserOptions options;
 
 	/**
 	 * Creates a new instance of the Corfu configuration parser.
 	 * @param mapper the Jackson mapper instance that can convert Corfu configuration files
 	 */
 	public CorfuConfigParser(ObjectMapper mapper) {
+		this(mapper, new ParserOptions());
+	}
+
+	/**
+	 * Creates a new instance of the Corfu configuration parser.
+	 * @param mapper the Jackson mapper instance that can convert Corfu configuration files
+	 * @param options custom configuration options to configure the behaviour of the parser
+	 */
+	public CorfuConfigParser(ObjectMapper mapper, ParserOptions options) {
 		this.mapper = mapper;
+		this.options = options;
 	}
 
 	/**
@@ -146,6 +157,12 @@ public class CorfuConfigParser {
 		try (var stream = Files.list(appsDir)) {
 			var list = stream.toList();
 			for (Path appDir : list) {
+				var appName = appDir.getFileName().toString();
+				if (options.getIgnoredApps().contains(appName)) {
+					System.err.printf("Ignoring application %s%n", appName);
+					continue;
+				}
+
 				if (!Files.isDirectory(appDir)) {
 					throw new IllegalArgumentException(("The app %s is not a directory. Please remove this file " +
 							"or create a directory with this name and try again.").formatted(appDir.toString()));
@@ -177,6 +194,12 @@ public class CorfuConfigParser {
 		try (var stream = Files.list(nodesDir)) {
 			var list = stream.toList();
 			for (Path node : list) {
+				var nodeName = node.getFileName().toString();
+				if (options.getIgnoredNodes().contains(nodeName)) {
+					System.err.printf("Ignoring node %s%n", nodeName);
+					continue;
+				}
+
 				if (Files.isRegularFile(node)) {
 					// try to read file
 					nodes.add(getNodeConfiguration(node, PathUtils.getFileName(node, true)));
