@@ -33,16 +33,16 @@ public class Message extends Identifiable {
 	}
 
 	public void finalizeConfig() {
-		if (Objects.nonNull(fields)) {
-			fields.setName(name.raw());
-			fields.setAssociatedApp(associatedApp);
+		if (Objects.isNull(fields)) {
+			fields = new MessageFields();
 		}
+
+		fields.setName(name.raw());
+		fields.setAssociatedApp(associatedApp);
 	}
 
 	public void resolveType(Map<String, TypeReference> references) {
-		if (Objects.nonNull(fields)) {
-			fields.resolveType(references);
-		}
+		fields.resolveType(references);
 	}
 
 	@Override
