@@ -1,4 +1,4 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.util;
+package de.wuespace.telestion.project.corfu.sample.pkg.util;
 
 import java.nio.file.Path;
 
