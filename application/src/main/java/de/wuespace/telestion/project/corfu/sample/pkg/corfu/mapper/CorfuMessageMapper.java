@@ -30,7 +30,7 @@ public class CorfuMessageMapper {
 	/**
 	 * The maximum size of a telemetry payload in bytes.
 	 */
-	public static final int MAX_TELEMETRY_PAYLOAD_SIZE = 128;
+	public static final int MAX_TELEMETRY_PAYLOAD_SIZE = 200;
 
 	/**
 	 * The maximum size of a telecommand payload in bytes.
