@@ -1,4 +1,4 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;

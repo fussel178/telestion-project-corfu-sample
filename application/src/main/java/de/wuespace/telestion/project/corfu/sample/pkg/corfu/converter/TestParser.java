@@ -4,6 +4,7 @@ import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.exception.
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.fs.ProjectGeneratorFilesystem;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.CorfuConfigParser;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.ParserOptions;
+import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser.YAML;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.JinjaTemplateEngine;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.ResourceTemplateProvider;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.Package;
@@ -14,8 +15,8 @@ import java.nio.file.Path;
 public class TestParser {
 	public static void main(String[] args) throws ParsingException, IOException {
 		// read and connect Corfu configuration from target project
-		var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-example-obsw");
-		// var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-config-converter/sample/innocube");
+		//var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-example-obsw");
+		var projectRootDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/corfu-config-converter/sample/innocube");
 
 		var options = new ParserOptions().addIgnoredNode("fake-transceiver");
 		var parser = new CorfuConfigParser(YAML.getMapper(), options);
