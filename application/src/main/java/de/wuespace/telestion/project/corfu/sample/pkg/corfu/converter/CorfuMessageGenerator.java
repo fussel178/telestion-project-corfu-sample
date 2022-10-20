@@ -98,67 +98,85 @@ public class CorfuMessageGenerator {
 		var nodesPkg = basePkg.resolve(NODES_PKG);
 
 		// 1: Apps
+		System.out.printf("Generate app definitions%n");
 		for (var app : config.apps) {
 			var appPkg = appsPkg.resolve(new Package(app.getName().packageName()));
+			System.out.printf("+ App: %s (%s)%n", app.getName().raw(), appPkg.binaryName());
 
 			// 1.1: Generate all app structs
+			System.out.printf("  + app structs:%n");
 			for (var struct : app.structs.values()) {
+				System.out.printf("    + struct: %s%n", struct.getName().raw());
 				var structRendering = engine.renderAppStructRecord(appPkg, struct);
 				fs.writeFile(structRendering);
 			}
 
 			// 1.2: Generate standard telemetry
+			System.out.printf("  + app standard telemetry%n");
 			var standardTelemetryRendering = engine.renderAppStandardTelemetryRecord(appPkg, app);
 			renderedAppStandardTelemetries.put(app.getName().raw(), standardTelemetryRendering);
 			fs.writeFile(standardTelemetryRendering);
 
 			// 1.3: Generate all telecommand payloads
+			System.out.printf("  + telecommand payloads:%n");
 			for (var telecommand : app.telecommands.values()) {
+				System.out.printf("    + telecommand payload: %s%n", telecommand.getName().raw());
 				var telecommandRendering = engine.renderTelecommandPayloadRecord(appPkg, telecommand);
 				renderedTelecommandPayloads.add(telecommandRendering);
 				fs.writeFile(telecommandRendering);
 			}
 
 			// 1.4: Generate all telemetry payloads
+			System.out.printf("  + telemetry payloads:%n");
 			for (var telemetry : app.extendedTelemetry.values()) {
+				System.out.printf("    + telemetry payload: %s%n", telemetry.getName().raw());
 				var telemetryRendering = engine.renderTelemetryPayloadRecord(appPkg, telemetry);
 				renderedTelemetryPayloads.add(telemetryRendering);
 				fs.writeFile(telemetryRendering);
 			}
 
 			// 1.5: Generate the telecommand payload interface
+			System.out.printf("  + telecommand payload interface%n");
 			var tcInterfaceRendering = engine.renderAppTelecommandPayloadInterface(appPkg, app);
 			fs.writeFile(tcInterfaceRendering);
 
 			// 1.6: Generate the telemetry payload interface
+			System.out.printf("  + telemetry payload interface%n");
 			var tmInterfaceRendering = engine.renderAppTelemetryPayloadInterface(appPkg, app);
 			fs.writeFile(tmInterfaceRendering);
 
 			if (app.generatesStandardTelemetry()) {
+				System.out.printf("  + app is standard telemetry sender%n");
 				payloadInterface = tmInterfaceRendering;
 			}
 
 			// 1.7: Generate the app telecommand record
+			System.out.printf("  + app telecommand record%n");
 			var appTelecommandRendering = engine.renderAppTelecommandRecord(appPkg, app);
 			renderedAppTelecommands.add(appTelecommandRendering);
 			fs.writeFile(appTelecommandRendering);
 
+			System.out.printf("  + app telemetry record%n");
 			var appTelemetryRendering = engine.renderAppTelemetryRecord(appPkg, app);
 			renderedAppTelemetries.add(appTelemetryRendering);
 			fs.writeFile(appTelemetryRendering);
 		}
 
 		// 2: Nodes
+		System.out.printf("Generate node definitions%n");
 		for (var node : config.nodes) {
 			var nodePkg = nodesPkg.resolve(new Package(node.getName().packageName()));
+			System.out.printf("+ Node: %s (%s)%n", node.getName().raw(), nodePkg.binaryName());
 
 			// 2.1: Generate node record
+			System.out.printf("  + node record%n");
 			var nodeRendering = engine.renderNodeRecord(nodePkg, node);
 			renderedNodes.add(nodeRendering);
 			fs.writeFile(nodeRendering);
 
 			if (generatesStandardTelemetry()) {
 				// 2.2: Generate node standard telemetry
+				System.out.printf("  + node standard telemetry%n");
 				var appStandardTelemetryRenderings = node.apps.keySet().stream()
 						.map(renderedAppStandardTelemetries::get)
 						.toList();
@@ -176,6 +194,7 @@ public class CorfuMessageGenerator {
 		// TODO!
 
 		// 4: Generate registrar
+		System.out.printf("generate registrar%n");
 		var registrarRendering = engine.renderRegistrarClass(
 				basePkg,
 				renderedNodes,
@@ -185,5 +204,7 @@ public class CorfuMessageGenerator {
 				renderedTelemetryPayloads
 		);
 		fs.writeFile(registrarRendering);
+
+		System.out.printf("Done%n");
 	}
 }
