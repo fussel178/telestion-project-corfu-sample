@@ -50,16 +50,113 @@ public class HashMessageTypeStore implements MessageTypeStore {
 	public void registerNode(Class<? extends CorfuNode> nodeClassType,
 							 String nodeName,
 							 short nodeId,
-							 Class<? extends CorfuHardware> nodeHardwareType) {
+							 Class<? extends CorfuHardware> hardwareClassType) {
+
+		if (nodeNameStore.containsKey(nodeName)) {
+			var registeredClassType = nodeNameStore.get(nodeName);
+			throw new IllegalArgumentException(("Cannot register new node %s with name \"%s\" because another node " +
+					"%s is already registered with this name. Please change the name of the node %s or remove the " +
+					"already registered node %s from the store and try again.")
+					.formatted(
+							nodeClassType.getName(),
+							nodeName,
+							registeredClassType.getName(),
+							nodeClassType.getName(),
+							registeredClassType.getName()
+					)
+			);
+		}
+
+		if (nodeIdStore.containsKey(nodeId)) {
+			var registeredClassType = nodeIdStore.get(nodeId);
+			throw new IllegalArgumentException(("Cannot register new node %s with id %d because another node %s is " +
+					"already registered with this name. Please change the id of the node %s or remove the already " +
+					"registered node %s from the store and try again.")
+					.formatted(
+							nodeClassType.getName(),
+							nodeId,
+							registeredClassType.getName(),
+							nodeClassType.getName(),
+							registeredClassType.getName()
+					)
+			);
+		}
+
 		nodeNameStore.put(nodeName, nodeClassType);
 		nodeIdStore.put(nodeId, nodeClassType);
-		nodeHardwareStore.put(nodeClassType, nodeHardwareType);
+		nodeHardwareStore.put(nodeClassType, hardwareClassType);
 	}
 
 	@Override
 	public void registerAppTelemetry(Class<? extends CorfuAppTelemetry> classType, String appName, short appId) {
+		if (appTelemetryNameStore.containsKey(appName)) {
+			var registeredClassType = appTelemetryNameStore.get(appName);
+			throw new IllegalArgumentException(("Cannot register new telemetry app %s with name \"%s\" because " +
+					"another telemetry app %s is already registered with this name. Please change the name of the " +
+					"telemetry app %s or remove the already registered telemetry app %s and try again.")
+					.formatted(
+							classType.getName(),
+							appName,
+							registeredClassType.getName(),
+							classType.getName(),
+							registeredClassType.getName()
+					)
+			);
+		}
+
+		if (appTelemetryIdStore.containsKey(appId)) {
+			var registeredClassType = appTelemetryIdStore.get(appId);
+			throw new IllegalArgumentException(("Cannot register new telemetry app %s with id %d because " +
+					"another telemetry app %s is already registered with this name. Please change the id of the " +
+					"telemetry app %s or remove the already registered telemetry app %s and try again.")
+					.formatted(
+							classType.getName(),
+							appId,
+							registeredClassType.getName(),
+							classType.getName(),
+							registeredClassType.getName()
+					)
+			);
+		}
+
 		appTelemetryNameStore.put(appName, classType);
 		appTelemetryIdStore.put(appId, classType);
+	}
+
+	@Override
+	public void registerAppTelecommand(Class<? extends CorfuAppTelecommand> classType, String appName, short appId) {
+		if (appTelecommandNameStore.containsKey(appName)) {
+			var registeredClassType = appTelecommandNameStore.get(appName);
+			throw new IllegalArgumentException(("Cannot register new telecommand app %s with name \"%s\" because " +
+					"another telecommand app %s is already registered with this name. Please change the name of the " +
+					"telecommand app %s or remove the already registered telecommand app %s and try again.")
+					.formatted(
+							classType.getName(),
+							appName,
+							registeredClassType.getName(),
+							classType.getName(),
+							registeredClassType.getName()
+					)
+			);
+		}
+
+		if (appTelecommandIdStore.containsKey(appId)) {
+			var registeredClassType = appTelecommandIdStore.get(appId);
+			throw new IllegalArgumentException(("Cannot register new telecommand app %s with id %d because " +
+					"another telecommand app %s is already registered with this name. Please change the id of the " +
+					"telecommand app %s or remove the already registered telecommand app %s and try again.")
+					.formatted(
+							classType.getName(),
+							appId,
+							registeredClassType.getName(),
+							classType.getName(),
+							registeredClassType.getName()
+					)
+			);
+		}
+
+		appTelecommandNameStore.put(appName, classType);
+		appTelecommandIdStore.put(appId, classType);
 	}
 
 	@Override
@@ -68,23 +165,40 @@ public class HashMessageTypeStore implements MessageTypeStore {
 										 short payloadId,
 										 short nodeId,
 										 Class<? extends CorfuAppTelemetry> associatedTelemetryApp) {
+
 		if (!appTelemetryNameStore.containsValue(associatedTelemetryApp)) {
-			throw new IllegalArgumentException(("The associated telemetry app %s is not yet registered. Please " +
-					"register the telemetry app %s first and then the telemetry payload.")
-					.formatted(associatedTelemetryApp.getName(), associatedTelemetryApp.getName()));
+			throw new IllegalArgumentException(("Cannot register new telemetry payload %s because the associated " +
+					"telemetry app %s is not yet registered. Please register the telemetry app %s first and then " +
+					"try to register the telemetry payload %s again.")
+					.formatted(
+							payloadClassType.getName(),
+							associatedTelemetryApp.getName(),
+							associatedTelemetryApp.getName(),
+							payloadClassType.getName()
+					)
+			);
 		}
 
+		var key = payloadKey(getAppTelemetryId(associatedTelemetryApp), payloadId, nodeId);
+		if (telemetryPayloadStore.containsKey(key)) {
+			var registeredClassType = telemetryPayloadStore.get(key);
+			throw new IllegalArgumentException(("Cannot register new telemetry payload %s because another telemetry " +
+					"payload %s is already registered with the combination of associated app %s, payload id %d and " +
+					"node id %d. Please change at least one of the parameters in telemetry payload %s or remove " +
+					"the already registered telemetry payload %s and try again.")
+					.formatted(
+							payloadClassType.getName(),
+							registeredClassType.getName(),
+							associatedTelemetryApp.getName(),
+							payloadId,
+							nodeId,
+							payloadClassType.getName(),
+							registeredClassType.getName()
+					)
+			);
+		}
 
-		telemetryPayloadStore.put(
-				payloadKey(getAppTelemetryId(associatedTelemetryApp), payloadId, nodeId),
-				payloadClassType
-		);
-	}
-
-	@Override
-	public void registerAppTelecommand(Class<? extends CorfuAppTelecommand> classType, String appName, short appId) {
-		appTelecommandNameStore.put(appName, classType);
-		appTelecommandIdStore.put(appId, classType);
+		telemetryPayloadStore.put(key, payloadClassType);
 	}
 
 	@Override
@@ -93,16 +207,40 @@ public class HashMessageTypeStore implements MessageTypeStore {
 										   short payloadId,
 										   short nodeId,
 										   Class<? extends CorfuAppTelecommand> associatedTelecommandApp) {
+
 		if (!appTelecommandNameStore.containsValue(associatedTelecommandApp)) {
-			throw new IllegalArgumentException(("The associated telecommand app %s is not yet registered. Please " +
-					"register the telecommand app %s first and then the telemetry payload.")
-					.formatted(associatedTelecommandApp.getName(), associatedTelecommandApp.getName()));
+			throw new IllegalArgumentException(("Cannot register new telecommand payload %s because the associated " +
+					"telecommand app %s is not yet registered. Please register the telecommand app %s first and then " +
+					"try to register the telecommand payload %s again.")
+					.formatted(
+							payloadClassType.getName(),
+							associatedTelecommandApp.getName(),
+							associatedTelecommandApp.getName(),
+							payloadClassType.getName()
+					)
+			);
 		}
 
-		telecommandPayloadStore.put(
-				payloadKey(getAppTelecommandId(associatedTelecommandApp), payloadId, nodeId),
-				payloadClassType
-		);
+		var key = payloadKey(getAppTelecommandId(associatedTelecommandApp), payloadId, nodeId);
+		if (telecommandPayloadStore.containsKey(key)) {
+			var registeredClassType = telecommandPayloadStore.get(key);
+			throw new IllegalArgumentException(("Cannot register new telecommand payload %s because another " +
+					"telecommand payload %s is already registered with the combination of associated app %s, payload " +
+					"id %d and node id %d. Please change at least one of the parameters in telecommand payload %s or " +
+					"remove the already registered telecommand payload %s and try again.")
+					.formatted(
+							payloadClassType.getName(),
+							registeredClassType.getName(),
+							associatedTelecommandApp.getName(),
+							payloadId,
+							nodeId,
+							payloadClassType.getName(),
+							registeredClassType.getName()
+					)
+			);
+		}
+
+		telecommandPayloadStore.put(key, payloadClassType);
 	}
 
 	@Override

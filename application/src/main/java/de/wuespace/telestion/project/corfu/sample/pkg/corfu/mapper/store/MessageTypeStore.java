@@ -44,12 +44,12 @@ public interface MessageTypeStore {
 	 * @param nodeClassType    the class type of the new node
 	 * @param nodeName         the name of the node as defined in the Corfu configuration
 	 * @param nodeId           the id of the node as defined in the Corfu configuration as unsigned byte
-	 * @param nodeHardwareType the class type of the hardware the node provides
+	 * @param hardwareClassType the class type of the hardware the node provides
 	 */
 	void registerNode(Class<? extends CorfuNode> nodeClassType,
 					  String nodeName,
 					  short nodeId,
-					  Class<? extends CorfuHardware> nodeHardwareType);
+					  Class<? extends CorfuHardware> hardwareClassType);
 
 	/**
 	 * Registers a new Corfu app as telemetry app that should be accessible through the store.
@@ -59,6 +59,15 @@ public interface MessageTypeStore {
 	 * @param appId     the id of the app as defined in the Corfu configuration as unsigned byte
 	 */
 	void registerAppTelemetry(Class<? extends CorfuAppTelemetry> classType, String appName, short appId);
+
+	/**
+	 * Registers a new Corfu app as telecommand app that should be accessible through the store.
+	 *
+	 * @param classType the class type of the new telecommand app
+	 * @param appName   the name of the app as defined in the Corfu configuration
+	 * @param appId     the id of the app as defined in the Corfu configuration as unsigned byte
+	 */
+	void registerAppTelecommand(Class<? extends CorfuAppTelecommand> classType, String appName, short appId);
 
 	/**
 	 * Registers a new telemetry payload for an already registered Corfu app
@@ -79,15 +88,6 @@ public interface MessageTypeStore {
 								  short payloadId,
 								  short nodeId,
 								  Class<? extends CorfuAppTelemetry> associatedTelemetryApp);
-
-	/**
-	 * Registers a new Corfu app as telecommand app that should be accessible through the store.
-	 *
-	 * @param classType the class type of the new telecommand app
-	 * @param appName   the name of the app as defined in the Corfu configuration
-	 * @param appId     the id of the app as defined in the Corfu configuration as unsigned byte
-	 */
-	void registerAppTelecommand(Class<? extends CorfuAppTelecommand> classType, String appName, short appId);
 
 	/**
 	 * Registers a new telecommand payload for an already registered Corfu app

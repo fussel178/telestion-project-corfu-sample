@@ -19,8 +19,8 @@ public class GlobalStore extends HashMessageTypeStore {
 	public synchronized void registerNode(Class<? extends CorfuNode> nodeClassType,
 										  String nodeName,
 										  short nodeId,
-										  Class<? extends CorfuHardware> nodeHardwareType) {
-		super.registerNode(nodeClassType, nodeName, nodeId, nodeHardwareType);
+										  Class<? extends CorfuHardware> hardwareClassType) {
+		super.registerNode(nodeClassType, nodeName, nodeId, hardwareClassType);
 	}
 
 	@Override
