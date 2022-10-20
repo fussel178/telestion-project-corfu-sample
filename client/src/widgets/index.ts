@@ -5,11 +5,15 @@ Please do not remove the // XXX_IMPORT_MARK comments or you will loose the abili
 using the tc-cli generate widget command.
  */
 
-import { Widget } from "@wuespace/telestion-client-types";
-import { widget as sampleWidget } from "./sample-widget";
+import { Widget } from '@wuespace/telestion-client-types';
+import { widget as sampleWidget } from './sample-widget';
+import { widget as currentValuesWidget } from './current-values-widget';
+import { widget as jsonTelecommandWidget } from './json-telecommand-widget';
 // IMPORT_INSERT_MARK
 
 export const projectWidgets: Widget[] = [
-	// ARRAY_FIRST_ELEMENT_INSERT_MARK
+	// ARRAY_FIRST_ELEMENT_INSERT_MARK,
+	jsonTelecommandWidget as Widget,
+	currentValuesWidget as Widget,
 	sampleWidget
 ];

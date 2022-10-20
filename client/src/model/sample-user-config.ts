@@ -1,49 +1,32 @@
-import { UserConfig } from "@wuespace/telestion-client-types";
+import { UserConfig } from '@wuespace/telestion-client-types';
 
 export const userConfig: UserConfig = {
-	'admin': {
+	admin: {
 		dashboards: [
 			{
 				title: 'Overview',
-				columns: 4,
-				rows: 4,
+				columns: 2,
+				rows: 2,
 				widgets: [
 					{
 						id: '0',
-						widgetName: 'sampleWidget',
-						width: 4,
-						height: 1
+						widgetName: 'currentValuesWidget',
+						width: 1,
+						height: 2,
+						initialProps: {
+							title: 'Current values',
+							connections: []
+						}
 					},
 					{
 						id: '1',
-						widgetName: 'Widget2',
-						width: 2,
-						height: 2
-					},
-					{
-						id: '2',
-						widgetName: 'Widget3',
-						width: 2,
-						height: 1
-					},
-					{
-						id: '3',
-						widgetName: 'Widget4',
+						widgetName: 'jsonTelecommandWidget',
 						width: 1,
-						height: 1
-					},
-					{
-						id: '4',
-						widgetName: 'Widget5',
-						width: 1,
-						height: 2
-					},
-					{
-						id: '5',
-						widgetName: 'Widget6',
-						width: 1,
-						height: 3
-					},
+						height: 2,
+						initialProps: {
+							title: 'JSON Telecommand'
+						}
+					}
 				]
 			}
 		]
