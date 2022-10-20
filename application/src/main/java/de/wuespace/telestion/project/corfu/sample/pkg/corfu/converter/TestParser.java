@@ -23,7 +23,7 @@ public class TestParser {
 		var config = parser.getProjectConfig(projectRootDir);
 
 		// generate Corfu messages based on Corfu configuration
-		var outputDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/telestion-project-corfu-sample/application/generated/main/java");
+		var outputDir = Path.of("/home/ludwig/Coding/Private/telestion-corfu-ba/telestion-project-corfu-sample/application/build/generated/sources/corfuMessages/main/java");
 		var basePkg = new Package("de.wuespace.telestion.project.corfu.sample.auto");
 		var fs = new ProjectGeneratorFilesystem(outputDir);
 		var engine = new JinjaTemplateEngine(new ResourceTemplateProvider());
