@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.exception.ParsingException;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.AppConfiguration;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.CorfuProjectConfiguration;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.type.NodeConfiguration;

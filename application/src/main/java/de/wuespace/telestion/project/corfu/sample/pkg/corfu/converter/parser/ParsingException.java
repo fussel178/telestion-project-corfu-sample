@@ -1,4 +1,4 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.exception;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.parser;
 
 public class ParsingException extends Exception {
 

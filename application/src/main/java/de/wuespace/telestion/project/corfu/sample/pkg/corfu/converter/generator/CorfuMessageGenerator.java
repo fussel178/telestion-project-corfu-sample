@@ -1,6 +1,5 @@
-package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter;
+package de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.generator;
 
-import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.fs.GeneratorFilesystem;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.TemplateEngine;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.type.AppRendering;
 import de.wuespace.telestion.project.corfu.sample.pkg.corfu.converter.template.type.NodeRendering;
