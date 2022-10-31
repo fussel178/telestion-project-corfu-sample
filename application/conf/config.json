@@ -27,7 +27,7 @@
 			},
 			{
 				"name": "UDP Transmitter",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.UDPTransmitter",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.UDPTransmitter",
 				"magnitude": 1,
 				"config": {
 					"inAddress": "raw-to-rodos-gateway",
@@ -38,7 +38,7 @@
 			},
 			{
 				"name": "Rodos Gateway Serializer",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.rodos.verticle.RodosGatewaySerializer",
+				"verticle": "org.github.fussel178.telestion.extension.corfu.rodos.verticle.RodosGatewaySerializer",
 				"magnitude": 1,
 				"config": {
 					"inAddress": "pretty-to-rodos-gateway",
@@ -47,7 +47,7 @@
 			},
 			{
 				"name": "Rodos Gateway Deserializer",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.rodos.verticle.RodosGatewayDeserializer",
+				"verticle": "org.github.fussel178.telestion.extension.corfu.rodos.verticle.RodosGatewayDeserializer",
 				"magnitude": 1,
 				"config": {
 					"inAddress": "raw-from-rodos-gateway",
@@ -56,7 +56,7 @@
 			},
 			{
 				"name": "Corfu Gateway Termination",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuGatewayTermination",
+				"verticle": "org.github.fussel178.telestion.extension.corfu.corfu.verticle.CorfuGatewayTermination",
 				"magnitude": 1,
 				"config": {
 					"senderNode": 4,
@@ -73,7 +73,7 @@
 			},
 			{
 				"name": "Corfu Component Registrar",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuComponentRegistrar",
+				"verticle": "org.github.fussel178.telestion.extension.corfu.corfu.verticle.CorfuComponentRegistrar",
 				"magnitude": 1,
 				"config": {
 					"registrarClassNames": [
@@ -83,7 +83,7 @@
 			},
 			{
 				"name": "Corfu Telecommand Serializer",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuTelecommandSerializer",
+				"verticle": "org.github.fussel178.telestion.extension.corfu.corfu.verticle.CorfuTelecommandSerializer",
 				"magnitude": 1,
 				"config": {
 					"inAddress": "pretty-corfu-telecommand",
@@ -92,7 +92,7 @@
 			},
 			{
 				"name": "Corfu Telemetry Deserializer",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuTelemetryDeserializer",
+				"verticle": "org.github.fussel178.telestion.extension.corfu.corfu.verticle.CorfuTelemetryDeserializer",
 				"magnitude": 1,
 				"config": {
 					"inAddress": "raw-corfu-telemetry",
@@ -101,7 +101,7 @@
 			},
 			{
 				"name": "Corfu Telecommand Finalizer",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.pkg.corfu.verticle.CorfuTelecommandFinalizer",
+				"verticle": "org.github.fussel178.telestion.extension.corfu.corfu.verticle.CorfuTelecommandFinalizer",
 				"magnitude": 1,
 				"config": {
 					"inAddress": "template-corfu-telecommand",
@@ -110,7 +110,7 @@
 			},
 			{
 				"name": "Corfu Message to Redis Mapper",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.CorfuMessageRedisMapper",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.CorfuMessageRedisMapper",
 				"magnitude": 1,
 				"config": {
 					"inAddress": "pretty-corfu-telemetry",
@@ -119,7 +119,7 @@
 			},
 			{
 				"name": "Redis Saver",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.redis.RedisSaver",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.redis.RedisSaver",
 				"magnitude": 1,
 				"config": {
 					"connectionString": "redis://localhost:6379",
@@ -131,7 +131,7 @@
 			},
 			{
 				"name": "Redis Request Handler",
-				"verticle": "de.wuespace.telestion.project.corfu.sample.verticle.redis.RedisRequestHandler",
+				"verticle": "de.wuespace.telestion.project.corfu.sample.redis.RedisRequestHandler",
 				"magnitude": 4,
 				"config": {
 					"connectionString": "redis://localhost:6379",

@@ -1,0 +1,3 @@
+[submodule "application/telestion-extension-corfu"]
+	path = application/telestion-extension-corfu
+	url = git@github.com:fussel178/telestion-extension-corfu.git
