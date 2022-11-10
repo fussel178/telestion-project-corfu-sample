@@ -41,6 +41,8 @@ jobs:
     steps:
       - name: Checkout 📥
         uses: actions/checkout@v3.1.0
+        with:
+          submodules: true
 
       - name: Run create-setup script
         run:
