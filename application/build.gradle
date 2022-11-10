@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'application'
-	id 'org.github.fussel178.telestion.extension.corfu.plugin'
+//	id 'org.github.fussel178.telestion.extension.corfu.plugin'
 }
 
 group 'de.wuespace.telestion.project.corfu.sample'
@@ -14,11 +14,13 @@ application {
     mainClass.set('de.wuespace.telestion.application.Telestion')
 }
 
+/*
 corfuGenerator {
 	corfuRootDir file('/path/to/corfu/project')
 	outputDir file('${buildDir}/generated/sources/corfuGenerator/main/java')
 	groupName 'de.wuespace.telestion.project.corfu.sample.auto'
 }
+*/
 
 sourceSets {
 	main {

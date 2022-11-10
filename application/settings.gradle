@@ -1,8 +1,6 @@
-pluginManagement {
-	includeBuild "telestion-extension-corfu"
-}
-
 rootProject.name = 'telestion-project-corfu-sample'
 
 gradle.ext.sourceCompatibility = '16'
 gradle.ext.targetCompatibility = '16'
+
+includeBuild "telestion-extension-corfu"
